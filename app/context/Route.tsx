@@ -11,11 +11,13 @@ export function RouteContextProvider({ children }: any) {
   const [destination, setDestination] = useState<Destination>();
   const [visible, setVisible] = useState(false);
   const [routeErrorMsg, setRouteErrorMsg] = useState<string>('');
+  const [routeData, setRouteData] = useState();
+  const [routeIndex, setRouteIndex] = useState();
 
   /**
    * Get route data.
    */
-  const getRoute = async () => {
+  const getRoute = async (navigation: any) => {
     try {
       if (origin !== undefined && destination !== undefined) {
         await getRouteData({
@@ -46,7 +48,8 @@ export function RouteContextProvider({ children }: any) {
           units: 'IMPERIAL',
         })
           .then(response => {
-            console.log(response);
+            setRouteData(response.data);
+            navigation.push('Route');
           })
           .catch(error => {
             console.log(error);
@@ -64,7 +67,7 @@ export function RouteContextProvider({ children }: any) {
         setVisible(true);
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   };
 
@@ -80,6 +83,10 @@ export function RouteContextProvider({ children }: any) {
         routeErrorMsg,
         setRouteErrorMsg,
         getRoute,
+        routeData,
+        setRouteData,
+        routeIndex,
+        setRouteIndex,
       }}>
       {children}
     </RouteContext.Provider>

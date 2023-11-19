@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Banner, Button, Icon, IconButton } from 'react-native-paper';
@@ -7,15 +7,11 @@ import { RouteContext } from '../../context/Route';
 import { styles } from '../../style/index';
 import { GOOGLE_API_KEY } from '../../constants';
 
-export default function Search() {
+export default function Search({ navigation }: any) {
   const apiKey = GOOGLE_API_KEY;
-  console.log(apiKey);
-
-  function icon(size: number) {
-    return <Icon source="alert-circle-outline" size={size} color="red" />;
-  }
-
   const {
+    origin,
+    destination,
     setDestination,
     setOrigin,
     getRoute,
@@ -23,6 +19,19 @@ export default function Search() {
     visible,
     setVisible,
   } = useContext(RouteContext);
+  function icon(size: number) {
+    return <Icon source="alert-circle-outline" size={size} color="red" />;
+  }
+
+  useEffect(() => {
+    if (origin) {
+      this.GooglePlacesRef.setAddressText(origin.description);
+    }
+    if (destination) {
+      this.GooglePlacesRef2.setAddressText(destination.description);
+    }
+  }, [destination, origin]);
+
   return (
     <>
       <SafeAreaView style={styles.origin}>
@@ -34,7 +43,7 @@ export default function Search() {
           fetchDetails
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
-            console.log(data, details);
+            // console.log(data, details);
             setOrigin({ ...data, ...details });
           }}
           query={{
@@ -85,7 +94,7 @@ export default function Search() {
           fetchDetails
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
-            console.log(data, details);
+            // console.log(data, details);
             setDestination({ ...data, ...details });
           }}
           query={{
@@ -129,7 +138,10 @@ export default function Search() {
       </SafeAreaView>
       <SafeAreaView style={styles.searchBar} />
       <SafeAreaView style={styles.searchButton}>
-        <Button icon="map-search" mode="contained" onPress={() => getRoute()}>
+        <Button
+          icon="map-search"
+          mode="contained"
+          onPress={() => getRoute(navigation)}>
           Find route
         </Button>
       </SafeAreaView>
