@@ -87,4 +87,9 @@ export const styles = StyleSheet.create({
     marginLeft: 70,
     width: 40,
   },
+  routeContainer: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
 });

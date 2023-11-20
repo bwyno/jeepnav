@@ -1,12 +1,19 @@
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 
 import RoutesList from './RouteList';
 import { RouteContext } from '../../context/Route';
+import { styles } from '../../style';
 
 export default function Route({ navigation }: any) {
-  const { setDestination, setOrigin, setRouteData } = useContext(RouteContext);
+  const {
+    setDestination,
+    setOrigin,
+    setRouteData,
+    setOriginMarker,
+    setDestinationMarker,
+  } = useContext(RouteContext);
   return (
     <>
       <View>
@@ -17,14 +24,18 @@ export default function Route({ navigation }: any) {
               setDestination();
               setOrigin();
               setRouteData();
+              setOriginMarker();
+              setDestinationMarker();
             }}
           />
           <Appbar.Content title="Routes" />
-          <Appbar.Action icon="calendar" onPress={() => {}} />
+          <Appbar.Action icon="filter-variant" onPress={() => {}} />
           <Appbar.Action icon="magnify" onPress={() => {}} />
         </Appbar.Header>
-        <RoutesList navigate={navigation} />
       </View>
+      <ScrollView horizontal={true} style={styles.routeContainer}>
+        <RoutesList navigate={navigation} />
+      </ScrollView>
     </>
   );
 }

@@ -6,7 +6,6 @@ import LatLngConvert from '../../helpers/LatLngConvert';
 
 export default function DynamicPolyline({ route }: any) {
   const polylines: React.JSX.Element[] = [];
-  console.log(route);
   try {
     if (route) {
       route.legs.forEach((leg: any, legIndex: any) => {

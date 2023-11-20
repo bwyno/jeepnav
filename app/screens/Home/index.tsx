@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import React, { useContext } from 'react';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { styles } from '../../style';
 import mapStyle from '../../../assets/mapStyle.json';
 import Search from '../../components/Search';
@@ -8,8 +8,8 @@ import { FAB } from 'react-native-paper';
 import { RouteContext } from '../../context/Route';
 
 export default function Home({ navigation }: any) {
-  const { routeData, routeIndex } = useContext(RouteContext);
-  const [region] = useState();
+  const { routeData, routeIndex, region, originMarker, destinationMarker } =
+    useContext(RouteContext);
   /**
    * Set Initial Region to Cebu
    * @returns initialRegion
@@ -34,6 +34,8 @@ export default function Home({ navigation }: any) {
         {routeData?.routes && (
           <DynamicPolyline route={routeData.routes[routeIndex]} />
         )}
+        {originMarker && <Marker coordinate={originMarker} />}
+        {destinationMarker && <Marker coordinate={destinationMarker} />}
       </MapView>
       <Search navigation={navigation} />
       <FAB

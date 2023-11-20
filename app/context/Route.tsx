@@ -3,6 +3,7 @@ import React, { createContext, useState } from 'react';
 import { getRouteData } from '../service/RouteService';
 import Destination from '../types/DestinationInterface';
 import Origin from '../types/OriginInterface';
+import { FILTER } from '../constants';
 
 export const RouteContext = createContext<any>(null);
 
@@ -13,6 +14,9 @@ export function RouteContextProvider({ children }: any) {
   const [routeErrorMsg, setRouteErrorMsg] = useState<string>('');
   const [routeData, setRouteData] = useState();
   const [routeIndex, setRouteIndex] = useState();
+  const [region, setRegion] = useState();
+  const [originMarker, setOriginMarker] = useState();
+  const [destinationMarker, setDestinationMarker] = useState();
 
   /**
    * Get route data.
@@ -71,6 +75,11 @@ export function RouteContextProvider({ children }: any) {
     }
   };
 
+  function filterRoute(params: any) {
+    if (params === FILTER.FASTEST) {
+    }
+  }
+
   return (
     <RouteContext.Provider
       value={{
@@ -87,6 +96,13 @@ export function RouteContextProvider({ children }: any) {
         setRouteData,
         routeIndex,
         setRouteIndex,
+        region,
+        setRegion,
+        originMarker,
+        setOriginMarker,
+        destinationMarker,
+        setDestinationMarker,
+        filterRoute,
       }}>
       {children}
     </RouteContext.Provider>
