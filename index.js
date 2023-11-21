@@ -8,6 +8,8 @@ import App from './app/index';
 import { name as appName } from './app.json';
 import { PaperProvider } from 'react-native-paper';
 import { RouteContextProvider } from './app/context/Route';
+import { UserContextProvider } from './app/context/User';
+
 import Geolocation from '@react-native-community/geolocation';
 
 export default function Main() {
@@ -16,7 +18,9 @@ export default function Main() {
   return (
     <PaperProvider>
       <RouteContextProvider>
-        <App />
+        <UserContextProvider>
+          <App />
+        </UserContextProvider>
       </RouteContextProvider>
     </PaperProvider>
   );

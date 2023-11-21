@@ -19,6 +19,41 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  bottomControls: {
+    left: 10,
+    right: 10,
+    height: 100,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 25,
+  },
+  bottomView: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: 100,
+  },
+  switchView: {
+    position: 'absolute',
+    alignContent: 'flex-start',
+    margin: 20,
+    left: 0,
+    bottom: 0,
+    height: 40,
+    width: 185,
+    backgroundColor: 'white',
+    borderRadius: 25,
+  },
+  switch: {
+    position: 'absolute',
+    left: 10,
+    bottom: 5,
+  },
+  switchText: {
+    position: 'absolute',
+    left: 60,
+    bottom: 10,
+  },
   origin: {
     padding: 10,
     flex: 1,
@@ -121,5 +156,36 @@ export const styles = StyleSheet.create({
   items: {
     marginTop: 20,
     marginBottom: 20,
+  },
+  screenView: {
+    height: '100%',
+  },
+  welcomeText: {
+    fontSize: 70,
+    fontStyle: 'italic',
+  },
+  bannerView: {
+    height: '50%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loginView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loginHeader: {
+    fontSize: 30,
+    marginBottom: 20,
+  },
+  logInForm: {
+    width: 200,
+    borderWidth: 1,
+    borderRadius: 25,
+    padding: 20,
+    margin: 5,
+  },
+  errorMsgAuth: {
+    color: 'red',
   },
 });

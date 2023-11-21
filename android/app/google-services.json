@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "522095894423",
+    "project_id": "jeepnav-react",
+    "storage_bucket": "jeepnav-react.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522095894423:android:a3052a3c9180bc5cb32ed2",
+        "android_client_info": {
+          "package_name": "com.jeepnav"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjDHx0-LqHX8Jyc0ukuV4zNwWsykdR_aY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Home from './screens/Home/index';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Route from './screens/Routes';
+import Auth from './screens/Auth';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +14,8 @@ function App(): JSX.Element {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Home">
+        initialRouteName="Auth">
+        <Stack.Screen name="Auth" component={Auth} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Route" component={Route} />
       </Stack.Navigator>
