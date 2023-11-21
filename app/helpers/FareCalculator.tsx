@@ -1,6 +1,3 @@
-import { Text } from 'react-native';
-import React from 'react';
-
 export default function FareCalculator({ step }: any) {
   let distanceKm: number;
 
@@ -11,11 +8,11 @@ export default function FareCalculator({ step }: any) {
   if (step.travelMode === 'TRANSIT') {
     distanceKm = meterToKm(step.distanceMeters);
     if (distanceKm <= 4) {
-      return <Text>{(14).toFixed(2)}</Text>;
+      return (14).toFixed(2);
     } else {
-      return <Text>{(Math.floor(distanceKm - 4) * 2.2 + 14).toFixed(2)}</Text>;
+      return (Math.floor(distanceKm - 4) * 2.2 + 14).toFixed(2);
     }
   } else {
-    return <Text>{'-'}</Text>;
+    return 0;
   }
 }

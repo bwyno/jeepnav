@@ -2,5 +2,8 @@
   "extends": "@tsconfig/react-native/tsconfig.json",
   "compilerOptions": {
     "noImplicitThis": false,
+    "lib": [
+      "DOM",
+    ]
   }
 }

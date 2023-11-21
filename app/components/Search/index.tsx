@@ -6,6 +6,7 @@ import { Banner, Button, Icon, IconButton } from 'react-native-paper';
 import { RouteContext } from '../../context/Route';
 import { styles } from '../../style/index';
 import { GOOGLE_API_KEY } from '../../constants';
+(navigator.geolocation as any) = require('@react-native-community/geolocation');
 
 export default function Search({ navigation }: any) {
   const apiKey = GOOGLE_API_KEY;
@@ -41,6 +42,8 @@ export default function Search({ navigation }: any) {
           }}
           placeholder="Enter Origin"
           fetchDetails
+          currentLocation
+          currentLocationLabel="Set current location"
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             // console.log(data, details);

@@ -13,16 +13,30 @@ const RoutesList = ({ navigate }: any) => {
     setRegion,
     setOriginMarker,
     setDestinationMarker,
+    isFastestChecked,
+    isShortestChecked,
+    fastestRoute,
+    shortestRoute,
   } = useContext(RouteContext);
   const [selectedRoute, setSelectedRoute] = useState<any>(null);
 
   // eslint-disable-next-line react/no-unstable-nested-components
   function ExpandableItemsList({ item, index }: any) {
+    function secondsToHMS(seconds: number) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+      const formattedHours = hours.toString().padStart(1, '0');
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+      return `${formattedHours} hrs: ${formattedMinutes} mins: ${formattedSeconds}s`;
+    }
+    const duration = secondsToHMS(parseInt(item.legs[0].duration, 10));
     return (
       <TouchableOpacity onPress={() => setSelectedRoute(index)}>
         <View style={styles.routeItem} key={index}>
           <Text style={styles.title}>Route {index + 1} </Text>
-          <Text>Duration: {item.legs[0].duration} </Text>
+          <Text>Duration: {duration} </Text>
           <Text>
             Distance: {`${(item.legs[0].distanceMeters / 1000).toFixed(2)} km`}
           </Text>
@@ -52,9 +66,11 @@ const RoutesList = ({ navigate }: any) => {
                         {step.navigationInstruction.instructions}
                       </Text>
                     )}
-                    <Text style={styles.stepFare}>
-                      <FareCalculator step={step} />
-                    </Text>
+                    {step.travelMode === 'TRANSIT' && (
+                      <Text style={styles.stepFare}>
+                        {FareCalculator({ step })}
+                      </Text>
+                    )}
                   </View>
                 )}
               />
@@ -87,12 +103,18 @@ const RoutesList = ({ navigate }: any) => {
       </TouchableOpacity>
     );
   }
-
+  // console.log(fastestRoute);
   return (
     <View>
       {routeData && (
         <FlatList
-          data={routeData?.routes}
+          data={
+            isShortestChecked
+              ? shortestRoute?.routes
+              : isFastestChecked
+              ? fastestRoute?.routes
+              : routeData?.routes
+          }
           keyExtractor={(item, index) => index.toString()}
           renderItem={ExpandableItemsList}
         />

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { styles } from '../../style';
 import mapStyle from '../../../assets/mapStyle.json';
@@ -6,6 +6,7 @@ import Search from '../../components/Search';
 import DynamicPolyline from '../../components/DynamicPolyline';
 import { FAB } from 'react-native-paper';
 import { RouteContext } from '../../context/Route';
+import Geolocation from '@react-native-community/geolocation';
 
 export default function Home({ navigation }: any) {
   const { routeData, routeIndex, region, originMarker, destinationMarker } =
@@ -22,6 +23,25 @@ export default function Home({ navigation }: any) {
       longitudeDelta: 0.5,
     };
   }
+  async function getLocation() {
+    Geolocation.watchPosition(
+      data => {
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      },
+    );
+  }
+
+  useEffect(() => {
+    getLocation();
+  });
 
   return (
     <>
@@ -41,7 +61,7 @@ export default function Home({ navigation }: any) {
       <FAB
         icon="location-enter"
         style={styles.fab}
-        onPress={() => console.log('pressed')}
+        onPress={() => getLocation()}
       />
     </>
   );

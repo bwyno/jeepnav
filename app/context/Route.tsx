@@ -3,7 +3,6 @@ import React, { createContext, useState } from 'react';
 import { getRouteData } from '../service/RouteService';
 import Destination from '../types/DestinationInterface';
 import Origin from '../types/OriginInterface';
-import { FILTER } from '../constants';
 
 export const RouteContext = createContext<any>(null);
 
@@ -12,11 +11,16 @@ export function RouteContextProvider({ children }: any) {
   const [destination, setDestination] = useState<Destination>();
   const [visible, setVisible] = useState(false);
   const [routeErrorMsg, setRouteErrorMsg] = useState<string>('');
-  const [routeData, setRouteData] = useState();
+  const [routeData, setRouteData] = useState<any>();
   const [routeIndex, setRouteIndex] = useState();
   const [region, setRegion] = useState();
   const [originMarker, setOriginMarker] = useState();
   const [destinationMarker, setDestinationMarker] = useState();
+  const [isAllChecked, setIsAllChecked] = useState(true);
+  const [isFastestChecked, setIsFastestChecked] = useState();
+  const [isShortestChecked, setIsShortestChecked] = useState();
+  const [fastestRoute, setFastestRoute] = useState<any>();
+  const [shortestRoute, setShortestRoute] = useState<any>();
 
   /**
    * Get route data.
@@ -75,8 +79,37 @@ export function RouteContextProvider({ children }: any) {
     }
   };
 
-  function filterRoute(params: any) {
-    if (params === FILTER.FASTEST) {
+  function filterRoute() {
+    if (routeData) {
+      const routeFilteredA = [];
+      routeFilteredA.push(
+        routeData.routes.reduce((shortest: any, current: any) => {
+          const currentDistance = current.legs[0].distanceMeters;
+          const shortestDistance = shortest.legs[0].distanceMeters;
+          return currentDistance < shortestDistance ? current : shortest;
+        }),
+      );
+      setShortestRoute({ routes: routeFilteredA });
+
+      const routeFilteredB = [];
+      const getSecondsFromDurationString = (durationString: any) => {
+        const seconds = parseInt(durationString, 10); // Extract the number part
+        return !isNaN(seconds) ? seconds : 0; // Return 0 if parsing fails
+      };
+
+      // Find the fastest route
+      routeFilteredB.push(
+        routeData.routes.reduce((fastest: any, current: any) => {
+          const currentDuration = getSecondsFromDurationString(
+            current.legs[0].duration,
+          );
+          const fastestDuration = getSecondsFromDurationString(
+            fastest.legs[0].duration,
+          );
+          return currentDuration < fastestDuration ? current : fastest;
+        }),
+      );
+      setFastestRoute({ routes: routeFilteredB });
     }
   }
 
@@ -103,6 +136,16 @@ export function RouteContextProvider({ children }: any) {
         destinationMarker,
         setDestinationMarker,
         filterRoute,
+        isAllChecked,
+        setIsAllChecked,
+        isFastestChecked,
+        setIsFastestChecked,
+        isShortestChecked,
+        setIsShortestChecked,
+        fastestRoute,
+        setFastestRoute,
+        shortestRoute,
+        setShortestRoute,
       }}>
       {children}
     </RouteContext.Provider>
