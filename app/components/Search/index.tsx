@@ -42,8 +42,6 @@ export default function Search({ navigation }: any) {
           }}
           placeholder="Enter Origin"
           fetchDetails
-          currentLocation
-          currentLocationLabel="Set current location"
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             // console.log(data, details);
@@ -68,6 +66,7 @@ export default function Search({ navigation }: any) {
               width: '90%',
             },
             textInputContainer: {
+              zIndex: 2,
               width: '100%',
             },
             textInput: {

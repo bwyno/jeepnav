@@ -20,11 +20,13 @@ export default function Home({ navigation }: any) {
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
   const [allowTracking, setAllowTracking] = React.useState(false);
   const [otherUsers, setOtherUsers] = React.useState<any>();
+  const [showUserLocation, setShowUserLocation] =
+    React.useState<boolean>(false);
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const trackingSwitch = () => {
     setAllowTracking(!allowTracking);
-    if (!allowTracking) {
+    if (allowTracking === true) {
       firestore()
         .collection('Roles')
         .doc('Driver')
@@ -32,6 +34,15 @@ export default function Home({ navigation }: any) {
         .doc(user)
         .update({
           isActive: true,
+        });
+    } else {
+      firestore()
+        .collection('Roles')
+        .doc('Driver')
+        .collection('Users')
+        .doc(user)
+        .update({
+          isActive: false,
         });
     }
   };
@@ -49,9 +60,7 @@ export default function Home({ navigation }: any) {
     };
   }
 
-  async function getUserLocation() {
-    Geolocation.getCurrentPosition((info: any) => console.log(info));
-  }
+  async function getUserLocation() {}
   useEffect(() => {
     if (userRole === ROLE.DRIVER && allowTracking) {
       Geolocation.watchPosition(
@@ -69,7 +78,7 @@ export default function Home({ navigation }: any) {
             .update({
               latitude: data.coords.latitude,
               longitude: data.coords.longitude,
-              isActive: true,
+              is_active: true,
             })
             .then(() => {
               console.log('User updated!');
@@ -85,6 +94,12 @@ export default function Home({ navigation }: any) {
         },
       );
     } else {
+      Geolocation.getCurrentPosition((data: any) =>
+        setUserLocation({
+          latitude: data.coords.latitude,
+          longitude: data.coords.longitude,
+        }),
+      );
       const subscriber = firestore()
         .collection('Roles')
         .doc('Driver')
@@ -94,7 +109,56 @@ export default function Home({ navigation }: any) {
         });
       return () => subscriber();
     }
-  }, [allowTracking, isSwitchOn, otherUsers, setUserLocation, user, userRole]);
+  }, [allowTracking, isSwitchOn, setUserLocation, user, userRole]);
+
+  const commuterView = (
+    <>
+      {userRole === ROLE.COMMUTER && (
+        <>
+          <View style={styles.bottomView}>
+            <View style={styles.switchView}>
+              <Switch
+                value={isSwitchOn}
+                onValueChange={onToggleSwitch}
+                style={styles.switch}
+              />
+              <Text style={styles.switchText}>VIEW JEEPNEYS</Text>
+            </View>
+
+            <FAB
+              icon="location-enter"
+              style={styles.fab}
+              onPress={() => setShowUserLocation(!showUserLocation)}
+            />
+          </View>
+          <Search navigation={navigation} />
+        </>
+      )}
+    </>
+  );
+
+  const driverView = (
+    <>
+      {userRole === ROLE.DRIVER && (
+        <View style={styles.bottomView}>
+          <View style={styles.switchView}>
+            <Switch
+              value={allowTracking}
+              onValueChange={trackingSwitch}
+              style={styles.switch}
+            />
+            <Text style={styles.switchText}>ALLOW TRACKING</Text>
+          </View>
+
+          <FAB
+            icon="location-enter"
+            style={styles.fab}
+            onPress={() => getUserLocation()}
+          />
+        </View>
+      )}
+    </>
+  );
 
   return (
     <>
@@ -107,12 +171,11 @@ export default function Home({ navigation }: any) {
         {routeData?.routes && (
           <DynamicPolyline route={routeData.routes[routeIndex]} />
         )}
-        {userLocation && (
+        {userLocation && showUserLocation && (
           <Marker coordinate={userLocation}>
-            <Icon source="arrow-down-drop-circle" size={25} color="green" />
+            <Icon source="human-handsup" size={25} color="green" />
           </Marker>
         )}
-        {/* {isSwitchOn && <DynamicMarker />} */}
         {otherUsers &&
           isSwitchOn &&
           otherUsers.map(
@@ -132,43 +195,8 @@ export default function Home({ navigation }: any) {
         {originMarker && <Marker coordinate={originMarker} />}
         {destinationMarker && <Marker coordinate={destinationMarker} />}
       </MapView>
-      <Search navigation={navigation} />
-      {userRole === ROLE.COMMUTER && (
-        <View style={styles.bottomView}>
-          <View style={styles.switchView}>
-            <Switch
-              value={isSwitchOn}
-              onValueChange={onToggleSwitch}
-              style={styles.switch}
-            />
-            <Text style={styles.switchText}>VIEW JEEPNEYS</Text>
-          </View>
-
-          <FAB
-            icon="location-enter"
-            style={styles.fab}
-            onPress={() => getUserLocation()}
-          />
-        </View>
-      )}
-      {userRole === ROLE.DRIVER && (
-        <View style={styles.bottomView}>
-          <View style={styles.switchView}>
-            <Switch
-              value={isSwitchOn}
-              onValueChange={trackingSwitch}
-              style={styles.switch}
-            />
-            <Text style={styles.switchText}>ALLOW TRACKING</Text>
-          </View>
-
-          <FAB
-            icon="location-enter"
-            style={styles.fab}
-            onPress={() => getUserLocation()}
-          />
-        </View>
-      )}
+      {commuterView}
+      {driverView}
     </>
   );
 }

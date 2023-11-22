@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
   origin: {
     padding: 10,
     flex: 1,
-    zIndex: 4,
+    zIndex: 10,
     width: '100%',
     position: 'absolute',
     opacity: 0.8,
