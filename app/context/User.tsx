@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useRef, useState } from 'react';
 
 export const UserContext = createContext<any>(null);
 
@@ -6,7 +6,7 @@ export function UserContextProvider({ children }: any) {
   const [user, setUser] = useState();
   const [userRole, setUserRole] = useState();
   const [userLocation, setUserLocation] = useState();
-  const [otherUsers, setOtherUsers] = useState();
+  const otherUsers = useRef();
 
   return (
     <UserContext.Provider
@@ -18,7 +18,6 @@ export function UserContextProvider({ children }: any) {
         user,
         setUser,
         otherUsers,
-        setOtherUsers,
       }}>
       {children}
     </UserContext.Provider>

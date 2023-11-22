@@ -33,7 +33,12 @@ export default function Auth({ navigation }: any) {
               .doc('Driver')
               .collection('Users')
               .doc(name)
-              .set({ jeepney_code: jeepneyCode, longitude: 0, latitude: 0 })
+              .set({
+                jeepney_code: jeepneyCode,
+                longitude: 0,
+                latitude: 0,
+                isActive: false,
+              })
               .then(() => {
                 console.log('User added!');
                 navigation.push('Home');

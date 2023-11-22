@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { styles } from '../../style';
 import mapStyle from '../../../assets/mapStyle.json';
@@ -7,7 +7,7 @@ import DynamicPolyline from '../../components/DynamicPolyline';
 import { FAB, Icon, Switch } from 'react-native-paper';
 import { RouteContext } from '../../context/Route';
 import Geolocation from '@react-native-community/geolocation';
-import { View, Text, AppState } from 'react-native';
+import { View, Text } from 'react-native';
 import { UserContext } from '../../context/User';
 import { ROLE } from '../../constants';
 import firestore from '@react-native-firebase/firestore';
@@ -15,32 +15,26 @@ import firestore from '@react-native-firebase/firestore';
 export default function Home({ navigation }: any) {
   const { routeData, routeIndex, region, originMarker, destinationMarker } =
     useContext(RouteContext);
-  const { userRole, setUserLocation, userLocation, user, setOtherUsers } =
+  const { userRole, setUserLocation, userLocation, user } =
     useContext(UserContext);
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-  const appState = useRef(AppState.currentState);
-  // const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const [allowTracking, setAllowTracking] = React.useState(false);
+  const [otherUsers, setOtherUsers] = React.useState<any>();
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        console.log('App has come to the foreground!');
-      }
-
-      appState.current = nextAppState;
-      // setAppStateVisible(appState.current);
-      console.log('AppState', appState.current);
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  const trackingSwitch = () => {
+    setAllowTracking(!allowTracking);
+    if (!allowTracking) {
+      firestore()
+        .collection('Roles')
+        .doc('Driver')
+        .collection('Users')
+        .doc(user)
+        .update({
+          isActive: true,
+        });
+    }
+  };
 
   /**
    * Set Initial Region to Cebu
@@ -59,7 +53,7 @@ export default function Home({ navigation }: any) {
     Geolocation.getCurrentPosition((info: any) => console.log(info));
   }
   useEffect(() => {
-    if (userRole === ROLE.DRIVER) {
+    if (userRole === ROLE.DRIVER && allowTracking) {
       Geolocation.watchPosition(
         data => {
           console.log(data);
@@ -75,6 +69,7 @@ export default function Home({ navigation }: any) {
             .update({
               latitude: data.coords.latitude,
               longitude: data.coords.longitude,
+              isActive: true,
             })
             .then(() => {
               console.log('User updated!');
@@ -90,19 +85,16 @@ export default function Home({ navigation }: any) {
         },
       );
     } else {
-      if (isSwitchOn) {
-        const subscriber = firestore()
-          .collection('Roles')
-          .doc('Driver')
-          .collection('Users')
-          .onSnapshot(data => {
-            console.log(data);
-            setOtherUsers(data.docs);
-          });
-        return () => subscriber();
-      }
+      const subscriber = firestore()
+        .collection('Roles')
+        .doc('Driver')
+        .collection('Users')
+        .onSnapshot((data: any) => {
+          setOtherUsers(data.docs);
+        });
+      return () => subscriber();
     }
-  }, [isSwitchOn, setOtherUsers, setUserLocation, user, userRole]);
+  }, [allowTracking, isSwitchOn, otherUsers, setUserLocation, user, userRole]);
 
   return (
     <>
@@ -120,6 +112,23 @@ export default function Home({ navigation }: any) {
             <Icon source="arrow-down-drop-circle" size={25} color="green" />
           </Marker>
         )}
+        {/* {isSwitchOn && <DynamicMarker />} */}
+        {otherUsers &&
+          isSwitchOn &&
+          otherUsers.map(
+            (user: any, index: any) =>
+              user._data.is_active && (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: user._data.latitude,
+                    longitude: user._data.longitude,
+                  }}>
+                  <Icon source="jeepney" size={25} color="green" />
+                </Marker>
+              ),
+          )}
+
         {originMarker && <Marker coordinate={originMarker} />}
         {destinationMarker && <Marker coordinate={destinationMarker} />}
       </MapView>
@@ -133,6 +142,24 @@ export default function Home({ navigation }: any) {
               style={styles.switch}
             />
             <Text style={styles.switchText}>VIEW JEEPNEYS</Text>
+          </View>
+
+          <FAB
+            icon="location-enter"
+            style={styles.fab}
+            onPress={() => getUserLocation()}
+          />
+        </View>
+      )}
+      {userRole === ROLE.DRIVER && (
+        <View style={styles.bottomView}>
+          <View style={styles.switchView}>
+            <Switch
+              value={isSwitchOn}
+              onValueChange={trackingSwitch}
+              style={styles.switch}
+            />
+            <Text style={styles.switchText}>ALLOW TRACKING</Text>
           </View>
 
           <FAB
