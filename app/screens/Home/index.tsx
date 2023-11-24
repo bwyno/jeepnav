@@ -60,7 +60,6 @@ export default function Home({ navigation }: any) {
     };
   }
 
-  async function getUserLocation() {}
   useEffect(() => {
     if (userRole === ROLE.DRIVER && allowTracking) {
       Geolocation.watchPosition(
@@ -89,7 +88,7 @@ export default function Home({ navigation }: any) {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 2500,
           maximumAge: 0,
         },
       );
@@ -128,7 +127,9 @@ export default function Home({ navigation }: any) {
             <FAB
               icon="location-enter"
               style={styles.fab}
-              onPress={() => setShowUserLocation(!showUserLocation)}
+              onPress={() => {
+                setShowUserLocation(!showUserLocation);
+              }}
             />
           </View>
           <Search navigation={navigation} />
@@ -149,12 +150,6 @@ export default function Home({ navigation }: any) {
             />
             <Text style={styles.switchText}>ALLOW TRACKING</Text>
           </View>
-
-          <FAB
-            icon="location-enter"
-            style={styles.fab}
-            onPress={() => getUserLocation()}
-          />
         </View>
       )}
     </>
@@ -187,7 +182,10 @@ export default function Home({ navigation }: any) {
                     latitude: user._data.latitude,
                     longitude: user._data.longitude,
                   }}>
-                  <Icon source="jeepney" size={25} color="green" />
+                  <View style={styles.markerView}>
+                    <Text>{user._data.jeepney_code}</Text>
+                    <Icon source="jeepney" size={15} color="green" />
+                  </View>
                 </Marker>
               ),
           )}

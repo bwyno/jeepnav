@@ -1,17 +1,26 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { UserContext } from '../../context/User';
 import { ROLE } from '../../constants';
 import { styles } from '../../style';
+import { RouteContext } from '../../context/Route';
 
 export default function Auth({ navigation }: any) {
   const { setUserRole, setUser } = useContext(UserContext);
+  const { routeData, setRouteData } = useContext(RouteContext);
   const [isDriver, setIsDriver] = useState<boolean>(false);
   const [name, setName] = useState('');
   const [jeepneyCode, setJeepneyCode] = useState('');
   const [error, setError] = useState<any>();
+
+  useEffect(() => {
+    if (routeData) {
+      setRouteData();
+    }
+  }, [routeData, setRouteData]);
+
   async function logIn() {
     setUser(name);
     firestore()

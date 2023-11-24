@@ -188,4 +188,9 @@ export const styles = StyleSheet.create({
   errorMsgAuth: {
     color: 'red',
   },
+  markerView: {
+    backgroundColor: 'pink',
+    padding: 4,
+    borderRadius: 25,
+  },
 });
