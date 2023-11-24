@@ -64,7 +64,6 @@ export default function Home({ navigation }: any) {
     if (userRole === ROLE.DRIVER && allowTracking) {
       Geolocation.watchPosition(
         data => {
-          console.log(data);
           setUserLocation({
             latitude: data.coords.latitude,
             longitude: data.coords.longitude,
@@ -78,9 +77,6 @@ export default function Home({ navigation }: any) {
               latitude: data.coords.latitude,
               longitude: data.coords.longitude,
               is_active: true,
-            })
-            .then(() => {
-              console.log('User updated!');
             });
         },
         error => {

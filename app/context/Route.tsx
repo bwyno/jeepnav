@@ -75,7 +75,7 @@ export function RouteContextProvider({ children }: any) {
         setVisible(true);
       }
     } catch (e) {
-      // console.log(e);
+      console.log(e);
     }
   };
 

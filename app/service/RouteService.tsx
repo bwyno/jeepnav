@@ -8,9 +8,7 @@ export const getRouteData = (data: any) => {
   return axios.post(`${url}?key=${apiKey}`, data, {
     headers: {
       'Content-Type': 'application/json',
-      'X-Goog-FieldMask':
-        // "routes.legs.steps.transitDetails,routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline",
-        'routes.*',
+      'X-Goog-FieldMask': 'routes.*',
     },
   });
 };

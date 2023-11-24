@@ -103,7 +103,6 @@ const RoutesList = ({ navigate }: any) => {
       </TouchableOpacity>
     );
   }
-  // console.log(fastestRoute);
   return (
     <View>
       {routeData && (
