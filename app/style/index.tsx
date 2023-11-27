@@ -93,8 +93,10 @@ export const styles = StyleSheet.create({
   },
   routeItem: {
     marginBottom: 10,
+    marginLeft: 5,
+    marginRight: 5,
     padding: 10,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ccc',
     borderRadius: 5,
   },
@@ -117,9 +119,10 @@ export const styles = StyleSheet.create({
   },
   stepInstruction: {
     width: 170,
+    textAlign: 'center',
   },
   stepFare: {
-    marginLeft: 70,
+    marginLeft: 30,
     width: 40,
   },
   routeContainer: {
@@ -160,9 +163,9 @@ export const styles = StyleSheet.create({
   screenView: {
     height: '100%',
   },
-  welcomeText: {
-    fontSize: 70,
-    fontStyle: 'italic',
+  welcomeLogo: {
+    height: 250,
+    width: 250,
   },
   bannerView: {
     height: '50%',

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import { UserContext } from '../../context/User';
@@ -50,7 +50,10 @@ export default function Auth({ navigation }: any) {
   return (
     <View style={styles.screenView}>
       <View style={styles.bannerView}>
-        <Text style={styles.welcomeText}>JEEPNAV</Text>
+        <Image
+          style={styles.welcomeLogo}
+          source={require('../../../assets/img/jeepnav-logo.png')}
+        />
       </View>
       {!isDriver && (
         <View style={styles.loginView}>
