@@ -35,117 +35,154 @@ export default function Search({ navigation }: any) {
 
   return (
     <>
-      <SafeAreaView style={styles.origin}>
-        <GooglePlacesAutocomplete
-          ref={instance => {
-            this.GooglePlacesRef = instance;
-          }}
-          placeholder="Enter Origin"
-          fetchDetails
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            // console.log(data, details);
-            setOrigin({ ...data, ...details });
-          }}
-          query={{
-            key: apiKey,
-            language: 'en',
-            components: 'country:ph',
-            radius: 33000,
-            location: '10.3157, 123.8854',
-          }}
-          onFail={error => {
-            console.log(error);
-          }}
-          styles={{
-            container: {
-              width: '100%',
-              zIndex: 1,
-            },
-            listView: {
-              width: '90%',
-            },
-            textInputContainer: {
-              zIndex: 2,
-              width: '100%',
-            },
-            textInput: {
-              width: '100%',
-            },
-          }}
-          renderRightButton={() => (
-            <IconButton
-              icon="close-thick"
-              size={20}
-              iconColor="red"
-              onPress={() => {
-                setOrigin();
+      <SafeAreaView style={styles.searchBar}>
+        <SafeAreaView style={styles.origin}>
+          <GooglePlacesAutocomplete
+            ref={instance => {
+              this.GooglePlacesRef = instance;
+            }}
+            placeholder="Enter Origin"
+            fetchDetails
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              // console.log(data, details);
+              setOrigin({ ...data, ...details });
+            }}
+            query={{
+              key: apiKey,
+              language: 'en',
+              components: 'country:ph',
+              radius: 33000,
+              location: '10.3157, 123.8854',
+            }}
+            onFail={error => {
+              console.log(error);
+            }}
+            styles={{
+              container: {
+                width: '100%',
+                zIndex: 1,
+              },
+              listView: {
+                width: '85%',
+                backgroundColor: '#242F3E',
+              },
+              textInputContainer: {
+                zIndex: 2,
+                width: '100%',
+              },
+              textInput: {
+                backgroundColor: '#242F3E',
+                width: '100%',
+                borderRadius: 15,
+                borderColor: 'gray',
+                borderWidth: 2,
+                color: 'white',
+                paddingLeft: 15,
+              },
+            }}
+            textInputProps={{
+              placeholderTextColor: 'white',
+              returnKeyType: 'search',
+            }}
+            renderRightButton={() => (
+              <IconButton
+                icon="broom"
+                size={25}
+                iconColor="tomato"
+                onPress={() => {
+                  setOrigin();
 
-                this.GooglePlacesRef.clear();
-              }}
-            />
-          )}
-        />
-      </SafeAreaView>
-      <SafeAreaView style={styles.destination}>
-        <GooglePlacesAutocomplete
-          ref={instance => {
-            this.GooglePlacesRef2 = instance;
-          }}
-          placeholder="Enter Destination"
-          fetchDetails
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            // console.log(data, details);
-            setDestination({ ...data, ...details });
-          }}
-          query={{
-            key: apiKey,
-            language: 'en',
-            components: 'country:ph',
-            radius: 33000,
-            location: '10.3157, 123.8854',
-          }}
-          onFail={error => {
-            console.log(error);
-          }}
-          styles={{
-            container: {
-              width: '100%',
-              zIndex: 2,
-            },
-            listView: {
-              width: '90%',
-            },
-            textInputContainer: {
-              width: '100%',
-            },
-            textInput: {
-              width: '100%',
-            },
-          }}
-          renderRightButton={() => (
-            <IconButton
-              icon="close-thick"
-              size={20}
-              iconColor="red"
-              onPress={() => {
-                setDestination();
+                  this.GooglePlacesRef.clear();
+                }}
+              />
+            )}
+          />
+        </SafeAreaView>
+        <SafeAreaView style={styles.destination}>
+          <GooglePlacesAutocomplete
+            ref={instance => {
+              this.GooglePlacesRef2 = instance;
+            }}
+            placeholder="Enter Destination"
+            fetchDetails
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              // console.log(data, details);
+              setDestination({ ...data, ...details });
+            }}
+            query={{
+              key: apiKey,
+              language: 'en',
+              components: 'country:ph',
+              radius: 33000,
+              location: '10.3157, 123.8854',
+            }}
+            onFail={error => {
+              console.log(error);
+            }}
+            styles={{
+              container: {
+                width: '100%',
+                zIndex: 2,
+              },
+              listView: {
+                width: '90%',
+              },
+              textInputContainer: {
+                width: '100%',
+              },
+              textInput: {
+                backgroundColor: '#242F3E',
+                width: '100%',
+                borderRadius: 15,
+                borderColor: 'gray',
+                borderWidth: 2,
+                color: 'white',
+                paddingLeft: 15,
+              },
+            }}
+            textInputProps={{
+              placeholderTextColor: 'white',
+              returnKeyType: 'search',
+            }}
+            renderRightButton={() => (
+              <IconButton
+                icon="broom"
+                size={25}
+                iconColor="tomato"
+                onPress={() => {
+                  setDestination();
 
-                this.GooglePlacesRef2.clear();
-              }}
-            />
-          )}
-        />
-      </SafeAreaView>
-      <SafeAreaView style={styles.searchBar} />
-      <SafeAreaView style={styles.searchButton}>
-        <Button
-          icon="map-search"
-          mode="contained"
-          onPress={() => getRoute(navigation)}>
-          Find route
-        </Button>
+                  this.GooglePlacesRef2.clear();
+                }}
+              />
+            )}
+          />
+        </SafeAreaView>
+        <SafeAreaView style={styles.searchButton}>
+          <Button
+            icon="magnify"
+            // eslint-disable-next-line react-native/no-inline-styles
+            contentStyle={{ flexDirection: 'row-reverse' }}
+            mode="contained"
+            onPress={() => getRoute(navigation)}
+            buttonColor="tomato">
+            Find
+          </Button>
+        </SafeAreaView>
+        <SafeAreaView style={styles.swapButton}>
+          <IconButton
+            icon="swap-vertical-bold"
+            size={50}
+            iconColor="tomato"
+            style={styles.swapButtonStyle}
+            onPress={() => {
+              setOrigin(destination);
+              setDestination(origin);
+            }}
+          />
+        </SafeAreaView>
       </SafeAreaView>
       <Banner
         style={styles.banner}

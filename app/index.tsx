@@ -1,13 +1,59 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import Home from './screens/Home/index';
+import Home from './screen/Home';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Route from './screens/Routes';
-import Auth from './screens/Auth';
+import { Icon } from 'react-native-paper';
+import MapSearch from './screen/MapSearch';
+import Profile from './screen/Profile';
+import Auth from './screen/Auth';
+import { SettingsContext } from './context/Settings';
 
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        // eslint-disable-next-line react/no-unstable-nested-components
+        tabBarIcon: ({ focused, color }) => {
+          let iconName;
+          if (route.name === 'Home') {
+            iconName = focused ? 'home-circle' : 'home-circle-outline';
+          } else if (route.name === 'Map Search') {
+            iconName = focused ? 'map-search' : 'map-search-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'account' : 'account-outline';
+          }
+          // You can return any component that you like here!
+          return <Icon source={iconName} size={35} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+        tabBarStyle: {
+          borderTopColor: 'black',
+          height: 60,
+          backgroundColor: '#441877',
+        },
+        tabBarHideOnKeyboard: true,
+        tabBarShowLabel: false,
+      })}
+      initialRouteName="Home">
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Map Search" component={MapSearch} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
+}
+
 function App(): JSX.Element {
+  const { fetchAppSettings } = useContext(SettingsContext);
+
+  useEffect(() => {
+    fetchAppSettings();
+  });
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -15,9 +61,8 @@ function App(): JSX.Element {
           headerShown: false,
         }}
         initialRouteName="Auth">
+        <Stack.Screen name="TabNavigator" component={TabNavigator} />
         <Stack.Screen name="Auth" component={Auth} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Route" component={Route} />
       </Stack.Navigator>
     </NavigationContainer>
   );

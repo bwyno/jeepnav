@@ -11,17 +11,20 @@ import { RouteContextProvider } from './app/context/Route';
 import { UserContextProvider } from './app/context/User';
 
 import Geolocation from '@react-native-community/geolocation';
+import { SettingContextProvider } from './app/context/Settings';
 
 export default function Main() {
   const config = {};
   Geolocation.setRNConfiguration(config);
   return (
     <PaperProvider>
-      <RouteContextProvider>
-        <UserContextProvider>
-          <App />
-        </UserContextProvider>
-      </RouteContextProvider>
+      <SettingContextProvider>
+        <RouteContextProvider>
+          <UserContextProvider>
+            <App />
+          </UserContextProvider>
+        </RouteContextProvider>
+      </SettingContextProvider>
     </PaperProvider>
   );
 }

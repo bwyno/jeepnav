@@ -1,6 +1,6 @@
 import { decode } from '@googlemaps/polyline-codec';
 import React from 'react';
-import { LatLng, Polyline } from 'react-native-maps';
+import { LatLng, Marker, Polyline } from 'react-native-maps';
 
 import LatLngConvert from '../../helpers/LatLngConvert';
 
@@ -25,12 +25,15 @@ export default function DynamicPolyline({ route }: any) {
             );
           } else {
             polylines.push(
-              <Polyline
-                key={`leg${legIndex}-step${stepIndex}`}
-                coordinates={coords}
-                strokeColor="red"
-                strokeWidth={5}
-              />,
+              <>
+                {/* <Marker coordinate={{}}/> */}
+                <Polyline
+                  key={`leg${legIndex}-step${stepIndex}`}
+                  coordinates={coords}
+                  strokeColor="red"
+                  strokeWidth={5}
+                />
+              </>,
             );
           }
         });

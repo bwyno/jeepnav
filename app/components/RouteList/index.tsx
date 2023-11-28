@@ -5,6 +5,7 @@ import { RouteContext } from '../../context/Route';
 import { styles } from '../../style';
 import { Button, Icon } from 'react-native-paper';
 import FareCalculator from '../../helpers/FareCalculator';
+import { SettingsContext } from '../../context/Settings';
 
 const RoutesList = ({ navigate }: any) => {
   const {
@@ -18,6 +19,7 @@ const RoutesList = ({ navigate }: any) => {
     fastestRoute,
     shortestRoute,
   } = useContext(RouteContext);
+  const { modernMinFare } = useContext(SettingsContext);
   const [selectedRoute, setSelectedRoute] = useState<any>(null);
 
   // eslint-disable-next-line react/no-unstable-nested-components
@@ -26,32 +28,43 @@ const RoutesList = ({ navigate }: any) => {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       const remainingSeconds = seconds % 60;
-      const formattedHours = hours.toString().padStart(1, '0');
-      const formattedMinutes = minutes.toString().padStart(2, '0');
-      const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
-      return `${formattedHours} hrs: ${formattedMinutes} mins: ${formattedSeconds}s`;
+      if (hours > 0) {
+        const formattedHours = hours.toString().padStart(1, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+        return `${formattedHours} hrs, ${formattedMinutes} mins, ${formattedSeconds}s`;
+      } else {
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = remainingSeconds.toString().padStart(2, '0');
+        return `${formattedMinutes} mins, ${formattedSeconds}s`;
+      }
     }
     const duration = secondsToHMS(parseInt(item.legs[0].duration, 10));
     return (
-      <TouchableOpacity onPress={() => setSelectedRoute(index)}>
+      <TouchableOpacity
+        onPress={() =>
+          setSelectedRoute((prevIndex: any) =>
+            prevIndex === index ? null : index,
+          )
+        }>
         <View style={styles.routeItem} key={index}>
           <Text style={styles.title}>Route {index + 1} </Text>
-          <Text>Duration: {duration} </Text>
-          <Text>
+          <Text style={styles.duration}>Duration: {duration} </Text>
+          <Text style={styles.duration}>
             Distance: {`${(item.legs[0].distanceMeters / 1000).toFixed(2)} km`}
           </Text>
           {selectedRoute === index && (
             <View style={styles.expandedList}>
-              <Text>Steps: </Text>
+              <Text style={styles.duration}>Steps: </Text>
               <FlatList
                 data={item.legs[0].steps}
                 keyExtractor={(step, stepIndex) => stepIndex.toString()}
                 renderItem={({ item: step, index: stepIndex }) => (
                   <View style={styles.stepView}>
                     {step.travelMode === 'TRANSIT' ? (
-                      <Icon source="jeepney" size={20} />
+                      <Icon source="jeepney" size={20} color="white" />
                     ) : (
-                      <Icon source="walk" size={20} />
+                      <Icon source="walk" size={20} color="white" />
                     )}
                     <Text style={styles.stepText} key={stepIndex}>
                       {step.travelMode === 'TRANSIT' &&
@@ -68,7 +81,7 @@ const RoutesList = ({ navigate }: any) => {
                     )}
                     {step.travelMode === 'TRANSIT' && (
                       <Text style={styles.stepFare}>
-                        {FareCalculator({ step })}
+                        {FareCalculator({ step }, modernMinFare)}
                       </Text>
                     )}
                   </View>
@@ -104,21 +117,32 @@ const RoutesList = ({ navigate }: any) => {
     );
   }
   return (
-    <View>
-      {routeData && (
-        <FlatList
-          data={
-            isShortestChecked
-              ? shortestRoute?.routes
-              : isFastestChecked
-              ? fastestRoute?.routes
-              : routeData?.routes
-          }
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={ExpandableItemsList}
-        />
+    <>
+      {routeData ? (
+        <>
+          <Text style={styles.routesHeader}>ROUTES</Text>
+          <FlatList
+            data={
+              isShortestChecked
+                ? shortestRoute?.routes
+                : isFastestChecked
+                ? fastestRoute?.routes
+                : routeData?.routes
+            }
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={ExpandableItemsList}
+            // eslint-disable-next-line react-native/no-inline-styles
+            style={{ height: '100%', width: '100%' }}
+          />
+        </>
+      ) : (
+        <View style={styles.emptyRouteList}>
+          <Text style={styles.emptyRouteListText}>
+            Search for routes, enter origin and destination.
+          </Text>
+        </View>
       )}
-    </View>
+    </>
   );
 };
 

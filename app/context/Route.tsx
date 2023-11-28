@@ -25,7 +25,7 @@ export function RouteContextProvider({ children }: any) {
   /**
    * Get route data.
    */
-  const getRoute = async (navigation: any) => {
+  const getRoute = async () => {
     try {
       if (origin !== undefined && destination !== undefined) {
         await getRouteData({
@@ -57,7 +57,6 @@ export function RouteContextProvider({ children }: any) {
         })
           .then(response => {
             setRouteData(response.data);
-            navigation.push('Route');
           })
           .catch(error => {
             console.log(error);

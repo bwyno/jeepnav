@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { ScrollView, Text, View, Modal } from 'react-native';
 import { Appbar, Button, Checkbox } from 'react-native-paper';
 
-import RoutesList from './RouteList';
+import RoutesList from '../../components/RouteList';
 import { RouteContext } from '../../context/Route';
 import { styles } from '../../style';
 import { FILTER } from '../../constants';
