@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import Home from './screen/Home';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,43 +8,51 @@ import MapSearch from './screen/MapSearch';
 import Profile from './screen/Profile';
 import Auth from './screen/Auth';
 import { SettingsContext } from './context/Settings';
+import Disclaimer from './components/Disclaimer';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function TabNavigator() {
+  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        // eslint-disable-next-line react/no-unstable-nested-components
-        tabBarIcon: ({ focused, color }) => {
-          let iconName;
-          if (route.name === 'Home') {
-            iconName = focused ? 'home-circle' : 'home-circle-outline';
-          } else if (route.name === 'Map Search') {
-            iconName = focused ? 'map-search' : 'map-search-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'account' : 'account-outline';
-          }
-          // You can return any component that you like here!
-          return <Icon source={iconName} size={35} color={color} />;
-        },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
-        headerShown: false,
-        tabBarStyle: {
-          borderTopColor: 'black',
-          height: 60,
-          backgroundColor: '#441877',
-        },
-        tabBarHideOnKeyboard: true,
-        tabBarShowLabel: false,
-      })}
-      initialRouteName="Home">
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Map Search" component={MapSearch} />
-      <Tab.Screen name="Profile" component={Profile} />
-    </Tab.Navigator>
+    <>
+      <Disclaimer
+        isVisible={isDisclaimerVisible}
+        onClose={() => setIsDisclaimerVisible(false)}
+      />
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          // eslint-disable-next-line react/no-unstable-nested-components
+          tabBarIcon: ({ focused, color }) => {
+            let iconName;
+            if (route.name === 'Home') {
+              iconName = focused ? 'home-circle' : 'home-circle-outline';
+            } else if (route.name === 'Map Search') {
+              iconName = focused ? 'map-search' : 'map-search-outline';
+            } else if (route.name === 'Profile') {
+              iconName = focused ? 'account' : 'account-outline';
+            }
+            // You can return any component that you like here!
+            return <Icon source={iconName} size={35} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+          headerShown: false,
+          tabBarStyle: {
+            borderTopColor: 'black',
+            height: 60,
+            backgroundColor: '#441877',
+          },
+          tabBarHideOnKeyboard: true,
+          tabBarShowLabel: false,
+        })}
+        initialRouteName="Home">
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Map Search" component={MapSearch} />
+        <Tab.Screen name="Profile" component={Profile} />
+      </Tab.Navigator>
+    </>
   );
 }
 
