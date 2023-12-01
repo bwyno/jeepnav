@@ -230,4 +230,51 @@ export const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 25,
   },
+  disclaimerContainer: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subHeader: {
+    marginBottom: 20,
+  },
+  articleContainer: {
+    marginBottom: 20,
+  },
+  articleTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  articleContent: {
+    fontSize: 14,
+  },
+  closing: {
+    marginTop: 20,
+    fontStyle: 'italic',
+  },
+  disclaimerScrollView: {
+    marginHorizontal: 20,
+  },
+  agreeButtonContainer: {
+    padding: 10,
+    width: 100,
+    height: 80,
+    alignSelf: 'center',
+  },
 });
