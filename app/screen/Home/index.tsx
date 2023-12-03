@@ -6,10 +6,13 @@ import { StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { UserContext } from '../../context/User';
 import { FAB } from 'react-native-paper';
+import { RouteContext } from '../../context/Route';
+import DynamicPolyline from '../../components/DynamicPolyline';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
   const { getUserLocation } = useContext(UserContext);
+  const { routeData, routeIndex } = useContext(RouteContext);
   /**
    * Set Initial Region to Cebu
    * @returns initialRegion
@@ -33,8 +36,11 @@ export default function Home() {
         style={styles.map}
         provider={PROVIDER_GOOGLE}
         customMapStyle={customMap}
-        initialRegion={initialRegion()}
-      />
+        initialRegion={initialRegion()}>
+        {routeData?.routes && (
+          <DynamicPolyline route={routeData.routes[routeIndex]} />
+        )}
+      </MapView>
       <FAB
         icon="location-enter"
         style={styles.fab}

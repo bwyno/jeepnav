@@ -12,6 +12,7 @@ export function UserContextProvider({ children }: any) {
   const [loginErrorMsg, setLoginErrorMsg] = useState('');
   const [signupErrorMsg, setSignupErrorMsg] = useState('');
   const otherUsers = useRef();
+  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -124,6 +125,8 @@ export function UserContextProvider({ children }: any) {
         fetchData,
         updateData,
         getUserLocation,
+        isDisclaimerVisible,
+        setIsDisclaimerVisible,
       }}>
       {children}
     </UserContext.Provider>

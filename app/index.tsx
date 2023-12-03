@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import Home from './screen/Home';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,19 +8,13 @@ import MapSearch from './screen/MapSearch';
 import Profile from './screen/Profile';
 import Auth from './screen/Auth';
 import { SettingsContext } from './context/Settings';
-import Disclaimer from './components/Disclaimer';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function TabNavigator() {
-  const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
   return (
     <>
-      <Disclaimer
-        isVisible={isDisclaimerVisible}
-        onClose={() => setIsDisclaimerVisible(false)}
-      />
       <Tab.Navigator
         screenOptions={({ route }) => ({
           // eslint-disable-next-line react/no-unstable-nested-components

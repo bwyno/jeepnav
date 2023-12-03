@@ -3,6 +3,7 @@ import React from 'react';
 import { LatLng, Marker, Polyline } from 'react-native-maps';
 
 import LatLngConvert from '../../helpers/LatLngConvert';
+import { Icon } from 'react-native-paper';
 
 export default function DynamicPolyline({ route }: any) {
   const polylines: React.JSX.Element[] = [];
@@ -26,13 +27,22 @@ export default function DynamicPolyline({ route }: any) {
           } else {
             polylines.push(
               <>
-                {/* <Marker coordinate={{}}/> */}
+                <Marker
+                  key={`leg${legIndex}-step${stepIndex}, start`}
+                  coordinate={step.startLocation.latLng}>
+                  <Icon source="eye-circle-outline" size={20} color="red" />
+                </Marker>
                 <Polyline
                   key={`leg${legIndex}-step${stepIndex}`}
                   coordinates={coords}
-                  strokeColor="red"
+                  strokeColor="tomato"
                   strokeWidth={5}
                 />
+                <Marker
+                  key={`leg${legIndex}-step${stepIndex}, end`}
+                  coordinate={step.endLocation.latLng}>
+                  <Icon source="eye-circle" size={20} color="red" />
+                </Marker>
               </>,
             );
           }

@@ -56,6 +56,7 @@ export function RouteContextProvider({ children }: any) {
           units: 'IMPERIAL',
         })
           .then(response => {
+            console.log(response.data);
             setRouteData(response.data);
           })
           .catch(error => {

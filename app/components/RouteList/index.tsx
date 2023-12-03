@@ -106,7 +106,7 @@ const RoutesList = ({ navigate }: any) => {
                     latitude: item.legs[0].endLocation?.latLng?.latitude,
                     longitude: item.legs[0].endLocation?.latLng?.longitude,
                   });
-                  navigate.push('Home');
+                  navigate.push('TabNavigator');
                 }}>
                 Go to Route
               </Button>

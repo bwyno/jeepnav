@@ -10,6 +10,7 @@ import {
 import { StyleSheet } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import { UserContext } from '../../context/User';
+import Disclaimer from '../../components/Disclaimer';
 
 export default function Auth({ navigation }: any) {
   const [hasSelected, setHasSelected] = useState<boolean>(false);
@@ -19,8 +20,15 @@ export default function Auth({ navigation }: any) {
   const [jeepneyCode, setJeepneyCode] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
   const [error, setError] = useState('');
-  const { logIn, signUp, loginErrorMsg, signupErrorMsg, setLoginErrorMsg } =
-    useContext(UserContext);
+  const {
+    logIn,
+    signUp,
+    loginErrorMsg,
+    signupErrorMsg,
+    setLoginErrorMsg,
+    isDisclaimerVisible,
+    setIsDisclaimerVisible,
+  } = useContext(UserContext);
 
   function createAccount() {
     // if (fare && name && jeepneyCode && plateNumber) {
@@ -44,6 +52,10 @@ export default function Auth({ navigation }: any) {
 
   return (
     <View style={styles.authView}>
+      <Disclaimer
+        isVisible={isDisclaimerVisible}
+        onClose={() => setIsDisclaimerVisible(false)}
+      />
       <View style={styles.authHeaderView}>
         <Text style={styles.authHeaderText}>JeepNav</Text>
         <Text style={styles.authHeaderContent}>Travel with Ease!</Text>
@@ -186,7 +198,7 @@ const styles = StyleSheet.create({
   },
   authHeaderText: {
     color: 'tomato',
-    fontSize: 70,
+    fontSize: 50,
     fontStyle: 'italic',
     fontWeight: '800',
   },
