@@ -1,18 +1,19 @@
 import React, { useContext, useEffect } from 'react';
 import { View } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import customMap from '../../../assets/customMap.json';
 import { StyleSheet } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { UserContext } from '../../context/User';
-import { FAB } from 'react-native-paper';
+import { FAB, Icon } from 'react-native-paper';
 import { RouteContext } from '../../context/Route';
 import DynamicPolyline from '../../components/DynamicPolyline';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
-  const { getUserLocation } = useContext(UserContext);
-  const { routeData, routeIndex } = useContext(RouteContext);
+  const { getUserLocation, userLocation } = useContext(UserContext);
+  const { routeData, routeIndex, region } = useContext(RouteContext);
+
   /**
    * Set Initial Region to Cebu
    * @returns initialRegion
@@ -36,7 +37,13 @@ export default function Home() {
         style={styles.map}
         provider={PROVIDER_GOOGLE}
         customMapStyle={customMap}
+        region={region}
         initialRegion={initialRegion()}>
+        {userLocation && (
+          <Marker coordinate={userLocation}>
+            <Icon source="human-male" size={25} color="tomato" />
+          </Marker>
+        )}
         {routeData?.routes && (
           <DynamicPolyline route={routeData.routes[routeIndex]} />
         )}

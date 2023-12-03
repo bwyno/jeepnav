@@ -30,7 +30,11 @@ export default function DynamicPolyline({ route }: any) {
                 <Marker
                   key={`leg${legIndex}-step${stepIndex}, start`}
                   coordinate={step.startLocation.latLng}>
-                  <Icon source="eye-circle-outline" size={20} color="red" />
+                  <Icon
+                    source="eye-circle-outline"
+                    size={25}
+                    color="powderblue"
+                  />
                 </Marker>
                 <Polyline
                   key={`leg${legIndex}-step${stepIndex}`}
@@ -41,7 +45,7 @@ export default function DynamicPolyline({ route }: any) {
                 <Marker
                   key={`leg${legIndex}-step${stepIndex}, end`}
                   coordinate={step.endLocation.latLng}>
-                  <Icon source="eye-circle" size={20} color="red" />
+                  <Icon source="eye-circle" size={25} color="powderblue" />
                 </Marker>
               </>,
             );
