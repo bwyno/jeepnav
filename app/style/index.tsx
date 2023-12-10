@@ -277,4 +277,7 @@ export const styles = StyleSheet.create({
     height: 80,
     alignSelf: 'center',
   },
+  filterButton: {
+    color: 'white',
+  },
 });

@@ -10,11 +10,13 @@ import Auth from './screen/Auth';
 import { SettingsContext } from './context/Settings';
 import { Platform } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
+import { UserContext } from './context/User';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function TabNavigator() {
+  const { userRole } = useContext(UserContext);
   return (
     <>
       <Tab.Navigator
@@ -46,7 +48,9 @@ function TabNavigator() {
         initialRouteName="Home">
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Map Search" component={MapSearch} />
-        <Tab.Screen name="Profile" component={Profile} />
+        {userRole !== 'commuter' && (
+          <Tab.Screen name="Profile" component={Profile} />
+        )}
       </Tab.Navigator>
     </>
   );

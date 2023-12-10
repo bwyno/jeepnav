@@ -28,6 +28,7 @@ export default function Auth({ navigation }: any) {
     setLoginErrorMsg,
     isDisclaimerVisible,
     setIsDisclaimerVisible,
+    setUserRole,
   } = useContext(UserContext);
 
   function createAccount() {
@@ -71,7 +72,10 @@ export default function Auth({ navigation }: any) {
                     icon="account"
                     size={70}
                     iconColor="tomato"
-                    onPress={() => navigation.push('TabNavigator')}
+                    onPress={() => {
+                      navigation.push('TabNavigator');
+                      setUserRole('commuter');
+                    }}
                   />
                   <Text style={styles.authSelectionLabel}>COMMUTER</Text>
                 </View>
@@ -80,7 +84,10 @@ export default function Auth({ navigation }: any) {
                     icon="jeepney"
                     size={70}
                     iconColor="tomato"
-                    onPress={() => setHasSelected(true)}
+                    onPress={() => {
+                      setHasSelected(true);
+                      setUserRole('driver');
+                    }}
                   />
                   <Text style={styles.authSelectionLabel}>DRIVER</Text>
                 </View>

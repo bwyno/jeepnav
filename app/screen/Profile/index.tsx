@@ -6,25 +6,35 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, IconButton, Switch } from 'react-native-paper';
 import { UserContext } from '../../context/User';
 
 export default function Profile() {
-  const { user, updateData } = useContext(UserContext);
+  const { user, updateData, userRole, updateLocationInDb } =
+    useContext(UserContext);
   // const [fare, setFare] = useState(user.fare);
-  const [jeepneyCode, setJeepneyCode] = useState(user.jeepney_code);
-  const [plateNumber, setPlateNumber] = useState(user.plate_number);
+  const [jeepneyCode, setJeepneyCode] = useState('');
+  const [plateNumber, setPlateNumber] = useState('');
   const [allowEdit, setAllowEdit] = useState<boolean>(false);
   const [errorUpdate, setErrorUpdate] = useState('');
-  const [allowTracking, setAllowTracking] = useState<boolean>(
-    user.is_tracking_allowed,
-  );
+  const [allowTracking, setAllowTracking] = useState<boolean>();
   const onToggleSwitch = () => setAllowTracking(!allowTracking);
+
+  useEffect(() => {
+    if (userRole === 'driver') {
+      setJeepneyCode(user.jeepney_code);
+      setPlateNumber(user.plate_number);
+      setAllowTracking(user.is_tracking_allowed);
+
+      updateLocationInDb(user.is_tracking_allowed);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userRole, user]);
 
   function updateInformation() {
     // if (jeepneyCode && plateNumber && fare && allowTracking) {
-    if (jeepneyCode && plateNumber && allowTracking) {
+    if (jeepneyCode && plateNumber) {
       setErrorUpdate('');
       updateData({
         jeepney_code: jeepneyCode,
@@ -79,11 +89,11 @@ export default function Profile() {
                   </Text>
                 </View>
                 {/* <View style={styles.detailContainer}>
-                  <Text style={styles.detailLabelText}>MINIMUM FARE: </Text>
-                  <Text style={styles.detailValueText}>
-                    {user.minimum_fare}
-                  </Text>
-                </View> */}
+              <Text style={styles.detailLabelText}>MINIMUM FARE: </Text>
+              <Text style={styles.detailValueText}>
+                {user.minimum_fare}
+              </Text>
+            </View> */}
                 <View style={styles.detailContainer}>
                   <Text style={styles.detailLabelText}>TRACKING ALLOWED: </Text>
                   <Text style={styles.detailValueText}>
@@ -117,14 +127,14 @@ export default function Profile() {
                   placeholderTextColor={'white'}
                 />
                 {/* <TextInput
-                  placeholder="Minimum Fare"
-                  value={fare}
-                  onChangeText={value => setFare(value)}
-                  style={styles.logInForm}
-                  placeholderTextColor={'white'}
-                  keyboardType="numeric"
-                  maxLength={5}
-                /> */}
+              placeholder="Minimum Fare"
+              value={fare}
+              onChangeText={value => setFare(value)}
+              style={styles.logInForm}
+              placeholderTextColor={'white'}
+              keyboardType="numeric"
+              maxLength={5}
+            /> */}
                 <View>
                   <Text style={styles.allowTrackingTextStyle}>
                     ALLOW TRACKING

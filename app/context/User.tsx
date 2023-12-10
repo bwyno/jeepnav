@@ -13,6 +13,7 @@ export function UserContextProvider({ children }: any) {
   const [signupErrorMsg, setSignupErrorMsg] = useState('');
   const otherUsers = useRef();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
+  const [userHeading, setUserHeading] = useState<any>(0);
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -85,6 +86,53 @@ export function UserContextProvider({ children }: any) {
       });
   }
 
+  async function updateLocationInDb(isActive: any) {
+    try {
+      if (isActive) {
+        Geolocation.watchPosition(
+          data => {
+            firestore()
+              .collection('Roles')
+              .doc('Driver')
+              .collection('Users')
+              .doc(user.name)
+              .update({
+                latitude: data.coords.latitude,
+                longitude: data.coords.longitude,
+                heading: data.coords.heading,
+                is_active: true,
+              });
+          },
+          error => {
+            console.log(error);
+          },
+          {
+            enableHighAccuracy: true,
+            interval: 1000,
+            fastestInterval: 1000,
+            timeout: 1000,
+            maximumAge: 0,
+            distanceFilter: 5,
+          },
+        );
+      } else {
+        firestore()
+          .collection('Roles')
+          .doc('Driver')
+          .collection('Users')
+          .doc(user.name)
+          .update({
+            latitude: 0,
+            longitude: 0,
+            heading: 0,
+            is_active: false,
+          });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async function getUserLocation() {
     try {
       Geolocation.watchPosition(
@@ -93,6 +141,7 @@ export function UserContextProvider({ children }: any) {
             latitude: data.coords.latitude,
             longitude: data.coords.longitude,
           });
+          setUserHeading(data.coords.heading);
           console.log(data);
         },
         error => {
@@ -134,6 +183,9 @@ export function UserContextProvider({ children }: any) {
         getUserLocation,
         isDisclaimerVisible,
         setIsDisclaimerVisible,
+        userHeading,
+        setUserHeading,
+        updateLocationInDb,
       }}>
       {children}
     </UserContext.Provider>

@@ -12,7 +12,7 @@ export function RouteContextProvider({ children }: any) {
   const [visible, setVisible] = useState(false);
   const [routeErrorMsg, setRouteErrorMsg] = useState<string>('');
   const [routeData, setRouteData] = useState<any>();
-  const [routeIndex, setRouteIndex] = useState();
+  const [routeIndex, setRouteIndex] = useState<any>();
   const [region, setRegion] = useState();
   const [originMarker, setOriginMarker] = useState();
   const [destinationMarker, setDestinationMarker] = useState();
@@ -21,6 +21,7 @@ export function RouteContextProvider({ children }: any) {
   const [isShortestChecked, setIsShortestChecked] = useState();
   const [fastestRoute, setFastestRoute] = useState<any>();
   const [shortestRoute, setShortestRoute] = useState<any>();
+  const [filteredJeepneyCodes, setFilteredJeepneyCodes] = useState<any[]>();
 
   /**
    * Get route data.
@@ -56,7 +57,6 @@ export function RouteContextProvider({ children }: any) {
           units: 'IMPERIAL',
         })
           .then(response => {
-            console.log(response.data);
             setRouteData(response.data);
           })
           .catch(error => {
@@ -78,6 +78,18 @@ export function RouteContextProvider({ children }: any) {
       console.log(e);
     }
   };
+
+  function getJeepneyCodes(index: any) {
+    let jeepneyCodes: any = [];
+    if (routeData) {
+      routeData.routes[index].legs[0].steps.map((step: any) => {
+        if (step.travelMode === 'TRANSIT') {
+          jeepneyCodes.push(step.transitDetails.transitLine.nameShort);
+        }
+      });
+      setFilteredJeepneyCodes(jeepneyCodes);
+    }
+  }
 
   function filterRoute() {
     if (routeData) {
@@ -146,6 +158,9 @@ export function RouteContextProvider({ children }: any) {
         setFastestRoute,
         shortestRoute,
         setShortestRoute,
+        getJeepneyCodes,
+        filteredJeepneyCodes,
+        setFilteredJeepneyCodes,
       }}>
       {children}
     </RouteContext.Provider>

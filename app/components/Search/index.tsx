@@ -192,10 +192,6 @@ export default function Search({ navigation }: any) {
             label: 'Fix it',
             onPress: () => setVisible(false),
           },
-          {
-            label: 'Learn more',
-            onPress: () => setVisible(false),
-          },
         ]}
         icon={({ size }) => icon(size)}>
         {routeErrorMsg}
