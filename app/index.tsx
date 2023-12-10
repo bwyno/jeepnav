@@ -8,6 +8,8 @@ import MapSearch from './screen/MapSearch';
 import Profile from './screen/Profile';
 import Auth from './screen/Auth';
 import { SettingsContext } from './context/Settings';
+import { Platform } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -54,6 +56,9 @@ function App(): JSX.Element {
   const { fetchAppSettings } = useContext(SettingsContext);
 
   useEffect(() => {
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
     fetchAppSettings();
   });
   return (
