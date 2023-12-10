@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Keyboard,
+  Image,
 } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
@@ -58,8 +59,10 @@ export default function Auth({ navigation }: any) {
         onClose={() => setIsDisclaimerVisible(false)}
       />
       <View style={styles.authHeaderView}>
-        <Text style={styles.authHeaderText}>JeepNav</Text>
-        <Text style={styles.authHeaderContent}>Travel with Ease!</Text>
+        <Image
+          style={styles.authHeaderlogo}
+          source={require('../../../assets/jeepnav-logo.png')}
+        />
       </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.authContentView}>
@@ -203,11 +206,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  authHeaderText: {
-    color: 'tomato',
-    fontSize: 50,
-    fontStyle: 'italic',
-    fontWeight: '800',
+  authHeaderlogo: {
+    height: 300,
+    width: 300,
   },
   authHeaderContent: {
     color: 'white',
