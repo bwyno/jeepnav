@@ -86,23 +86,30 @@ export function UserContextProvider({ children }: any) {
   }
 
   async function getUserLocation() {
-    Geolocation.watchPosition(
-      data => {
-        setUserLocation({
-          latitude: data.coords.latitude,
-          longitude: data.coords.longitude,
-        });
-        console.log(data);
-      },
-      error => {
-        console.log(error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 1000,
-        maximumAge: 0,
-      },
-    );
+    try {
+      Geolocation.watchPosition(
+        data => {
+          setUserLocation({
+            latitude: data.coords.latitude,
+            longitude: data.coords.longitude,
+          });
+          console.log(data);
+        },
+        error => {
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          interval: 1000,
+          fastestInterval: 1000,
+          timeout: 1000,
+          maximumAge: 0,
+          distanceFilter: 5,
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <UserContext.Provider

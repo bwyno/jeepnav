@@ -14,7 +14,11 @@ import Geolocation from '@react-native-community/geolocation';
 import { SettingContextProvider } from './app/context/Settings';
 
 export default function Main() {
-  const config = {};
+  const config = {
+    skipPermissionRequests: false,
+    locationProvider: 'auto',
+    authorizationLevel: 'always',
+  };
   Geolocation.setRNConfiguration(config);
   return (
     <PaperProvider>

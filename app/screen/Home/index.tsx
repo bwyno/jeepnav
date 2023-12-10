@@ -40,8 +40,24 @@ export default function Home() {
         region={region}
         initialRegion={initialRegion()}>
         {userLocation && (
-          <Marker coordinate={userLocation}>
-            <Icon source="human-male" size={25} color="tomato" />
+          <Marker
+            coordinate={{ latitude: 10.37964284, longitude: 123.98322678 }}
+            centerOffset={{ x: 0, y: 0 }}>
+            <View
+              style={{
+                borderRadius: 25,
+                borderWidth: 1,
+                borderColor: 'tomato',
+                margin: 0,
+              }}>
+              <Icon source="human-male" size={25} color="tomato" />
+            </View>
+            <View
+              style={{
+                position: 'absolute',
+              }}>
+              <Icon source="arrow-up" size={20} color="red" />
+            </View>
           </Marker>
         )}
         {routeData?.routes && (
