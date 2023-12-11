@@ -13,8 +13,7 @@ import firestore from '@react-native-firebase/firestore';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
-  const { getUserLocation, userLocation, userHeading, userRole } =
-    useContext(UserContext);
+  const { getUserLocation, userLocation, userRole } = useContext(UserContext);
   const { routeData, routeIndex, region, filteredJeepneyCodes } =
     useContext(RouteContext);
   const [status, setStatus] = React.useState<any>('unchecked');
@@ -64,16 +63,13 @@ export default function Home() {
         initialRegion={initialRegion()}>
         {userLocation && status === 'checked' && (
           <>
-            <Marker
-              coordinate={{ latitude: 10.3796966579, longitude: 123.98272816 }}
-              anchor={{ x: 0.5, y: 0.5 }}>
+            <Marker coordinate={userLocation} anchor={{ x: 0.5, y: 0.5 }}>
               <View
                 style={{
                   height: 70,
                   width: 70,
                   alignItems: 'center',
                   justifyContent: 'center',
-                  transform: [{ rotate: `${userHeading}deg` }],
                 }}>
                 <View
                   style={{
@@ -84,13 +80,6 @@ export default function Home() {
                   }}>
                   <Icon source="human" size={25} color="tomato" />
                 </View>
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                  }}>
-                  <Icon source="arrow-up" size={25} color="red" />
-                </View>
               </View>
             </Marker>
           </>
@@ -99,7 +88,7 @@ export default function Home() {
           showOthers === 'checked' &&
           otherUsers.map(
             (user: any, index: any) =>
-              user._data.is_active &&
+              user._data.is_tracking_allowed &&
               filteredJeepneyCodes.includes(user._data.jeepney_code) && (
                 <Marker
                   key={index}

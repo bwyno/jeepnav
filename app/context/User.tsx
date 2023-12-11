@@ -1,6 +1,8 @@
-import React, { createContext, useRef, useState } from 'react';
+import React, { createContext, useContext, useRef, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import Geolocation from '@react-native-community/geolocation';
+import { getRouteData } from '../service/RouteService';
+import { RouteContext } from './Route';
 
 export const UserContext = createContext<any>(null);
 
@@ -14,6 +16,10 @@ export function UserContextProvider({ children }: any) {
   const otherUsers = useRef();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
   const [userHeading, setUserHeading] = useState<any>(0);
+  const [userSpeed, setUserSpeed] = useState<any>();
+  const showETA = useRef(false);
+  const { destination } = useContext(RouteContext);
+  const [eta, setEta] = useState('');
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -25,7 +31,6 @@ export function UserContextProvider({ children }: any) {
       .then((DocumentSnapshot: any) => {
         if (DocumentSnapshot.exists) {
           setLoginErrorMsg('');
-          console.log(DocumentSnapshot);
           setUser(DocumentSnapshot._data);
           navigation.push('TabNavigator');
         } else {
@@ -43,7 +48,6 @@ export function UserContextProvider({ children }: any) {
       .get()
       .then((DocumentSnapshot: any) => {
         if (DocumentSnapshot.exists) {
-          console.log(DocumentSnapshot);
           setUser(DocumentSnapshot._data);
         }
       });
@@ -133,6 +137,42 @@ export function UserContextProvider({ children }: any) {
     }
   }
 
+  async function getETA() {
+    await getRouteData({
+      origin: {
+        location: {
+          latLng: {
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          },
+        },
+      },
+      destination: {
+        location: {
+          latLng: {
+            latitude: destination?.geometry?.location?.lat,
+            longitude: destination?.geometry?.location?.lng,
+          },
+        },
+      },
+      travelMode: 'TRANSIT',
+      computeAlternativeRoutes: true,
+      routeModifiers: {
+        avoidTolls: false,
+        avoidHighways: false,
+        avoidFerries: false,
+      },
+      languageCode: 'en-US',
+      units: 'IMPERIAL',
+    })
+      .then(response => {
+        setEta(response.data.routes[0].legs[0].duration);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   async function getUserLocation() {
     try {
       Geolocation.watchPosition(
@@ -142,7 +182,7 @@ export function UserContextProvider({ children }: any) {
             longitude: data.coords.longitude,
           });
           setUserHeading(data.coords.heading);
-          console.log(data);
+          setUserSpeed(data.coords.speed);
         },
         error => {
           console.log(error);
@@ -160,6 +200,7 @@ export function UserContextProvider({ children }: any) {
       console.log(error);
     }
   }
+
   return (
     <UserContext.Provider
       value={{
@@ -186,6 +227,12 @@ export function UserContextProvider({ children }: any) {
         userHeading,
         setUserHeading,
         updateLocationInDb,
+        userSpeed,
+        setUserSpeed,
+        getETA,
+        showETA,
+        eta,
+        setEta,
       }}>
       {children}
     </UserContext.Provider>

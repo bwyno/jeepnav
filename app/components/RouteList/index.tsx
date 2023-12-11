@@ -7,6 +7,7 @@ import { Button, Checkbox, Icon } from 'react-native-paper';
 import FareCalculator from '../../helpers/FareCalculator';
 import { SettingsContext } from '../../context/Settings';
 import { FILTER } from '../../constants';
+import { UserContext } from '../../context/User';
 
 const RoutesList = ({ navigate }: any) => {
   const {
@@ -26,6 +27,7 @@ const RoutesList = ({ navigate }: any) => {
     shortestRoute,
     getJeepneyCodes,
   } = useContext(RouteContext);
+  const { showETA } = useContext(UserContext);
   const { modernMinFare } = useContext(SettingsContext);
   const [selectedRoute, setSelectedRoute] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -101,6 +103,7 @@ const RoutesList = ({ navigate }: any) => {
                   icon="map-search"
                   mode="contained"
                   onPress={() => {
+                    showETA.current = true;
                     setRouteIndex(index);
                     getJeepneyCodes(index);
                     setRegion({
@@ -173,10 +176,10 @@ const RoutesList = ({ navigate }: any) => {
                 <Checkbox
                   status={isAllChecked ? 'checked' : 'unchecked'}
                   onPress={() => {
-                    filterRoute();
                     setIsAllChecked(!isAllChecked);
                     setIsFastestChecked(false);
                     setIsShortestChecked(false);
+                    filterRoute();
                   }}
                   disabled={true}
                 />
@@ -189,6 +192,7 @@ const RoutesList = ({ navigate }: any) => {
                     setIsFastestChecked(!isFastestChecked);
                     setIsShortestChecked(false);
                     setIsAllChecked(isFastestChecked ? true : false);
+                    filterRoute();
                   }}
                 />
                 <Text>{FILTER.FASTEST}</Text>
@@ -200,6 +204,7 @@ const RoutesList = ({ navigate }: any) => {
                     setIsFastestChecked(false);
                     setIsShortestChecked(!isShortestChecked);
                     setIsAllChecked(isShortestChecked ? true : false);
+                    filterRoute();
                   }}
                 />
                 <Text>{FILTER.SHORTEST}</Text>
