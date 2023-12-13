@@ -14,8 +14,14 @@ import firestore from '@react-native-firebase/firestore';
 export default function Home() {
   const { height, width } = useWindowDimensions();
   const { getUserLocation, userLocation, userRole } = useContext(UserContext);
-  const { routeData, routeIndex, region, filteredJeepneyCodes } =
-    useContext(RouteContext);
+  const {
+    routeData,
+    routeIndex,
+    region,
+    filteredJeepneyCodes,
+    upperHeadingThreshold,
+    lowerHeadingThreshold,
+  } = useContext(RouteContext);
   const [status, setStatus] = React.useState<any>('unchecked');
   const [showOthers, setShowOthers] = React.useState<any>('unchecked');
   const [otherUsers, setOtherUsers] = React.useState<any>();
@@ -89,7 +95,9 @@ export default function Home() {
           otherUsers.map(
             (user: any, index: any) =>
               user._data.is_tracking_allowed &&
-              filteredJeepneyCodes.includes(user._data.jeepney_code) && (
+              filteredJeepneyCodes.includes(user._data.jeepney_code) &&
+              user._data.heading > lowerHeadingThreshold &&
+              user._data.heading < upperHeadingThreshold && (
                 <Marker
                   key={index}
                   coordinate={{
