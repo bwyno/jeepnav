@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useContext, useEffect } from 'react';
 import { View } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Camera, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import customMap from '../../../assets/customMap.json';
 import { StyleSheet } from 'react-native';
 import { useWindowDimensions, Text } from 'react-native';
@@ -25,6 +25,8 @@ export default function Home() {
   const [status, setStatus] = React.useState<any>('unchecked');
   const [showOthers, setShowOthers] = React.useState<any>('unchecked');
   const [otherUsers, setOtherUsers] = React.useState<any>();
+  const mapRef = React.useRef<any>();
+  const [cameraHeading, setCameraHeading] = React.useState<any>(0);
 
   /**
    * Set Initial Region to Cebu
@@ -37,6 +39,13 @@ export default function Home() {
       latitudeDelta: 0.5,
       longitudeDelta: 0.5,
     };
+  }
+
+  function updateCameraHeading() {
+    const map: any = mapRef.current;
+    map.getCamera().then((info: Camera) => {
+      setCameraHeading(info.heading);
+    });
   }
 
   const onButtonToggle = (_value: any) => {
@@ -66,7 +75,20 @@ export default function Home() {
         provider={PROVIDER_GOOGLE}
         customMapStyle={customMap}
         region={region}
-        initialRegion={initialRegion()}>
+        initialRegion={initialRegion()}
+        ref={mapRef}
+        onTouchEnd={() => {
+          updateCameraHeading();
+        }}
+        onTouchCancel={() => {
+          updateCameraHeading();
+        }}
+        onTouchStart={() => {
+          updateCameraHeading();
+        }}
+        onTouchMove={() => {
+          updateCameraHeading();
+        }}>
         {userLocation && status === 'checked' && (
           <>
             <Marker coordinate={userLocation} anchor={{ x: 0.5, y: 0.5 }}>
@@ -115,7 +137,11 @@ export default function Home() {
                         width: 70,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        transform: [{ rotate: `${user._data.heading}deg` }],
+                        transform: [
+                          {
+                            rotate: `${user._data.heading - cameraHeading}deg`,
+                          },
+                        ],
                       }}>
                       <View
                         style={{
