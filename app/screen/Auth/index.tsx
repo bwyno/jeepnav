@@ -46,6 +46,7 @@ export default function Auth({ navigation }: any) {
           plate_number: plateNumber,
           is_active: true,
           jeepney_route: jeepneyRoute,
+          jeepney_headsign: '',
           // minimum_fare: fare,
         },
         navigation,
