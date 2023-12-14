@@ -1,9 +1,12 @@
 export default function calculateInitialBearing(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number,
+  prevCoord: { latitude: any; longitude: any },
+  currentCoord: { latitude: any; longitude: any },
 ) {
+  const lat1 = prevCoord.latitude;
+  const lon1 = prevCoord.longitude;
+  const lat2 = currentCoord.latitude;
+  const lon2 = currentCoord.longitude;
+
   const phi1 = (lat1 * Math.PI) / 180;
   const phi2 = (lat2 * Math.PI) / 180;
   const deltaLambda = ((lon2 - lon1) * Math.PI) / 180;

@@ -26,7 +26,6 @@ const RoutesList = ({ navigate }: any) => {
     fastestRoute,
     shortestRoute,
     getJeepneyCodes,
-    setTransitHeading,
   } = useContext(RouteContext);
   const { showETA } = useContext(UserContext);
   const { modernMinFare } = useContext(SettingsContext);
@@ -121,7 +120,6 @@ const RoutesList = ({ navigate }: any) => {
                       latitude: item.legs[0].endLocation?.latLng?.latitude,
                       longitude: item.legs[0].endLocation?.latLng?.longitude,
                     });
-                    setTransitHeading(index);
                     navigate.push('TabNavigator');
                   }}>
                   Go to Route

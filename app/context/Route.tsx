@@ -3,14 +3,6 @@ import React, { createContext, useState } from 'react';
 import { getRouteData } from '../service/RouteService';
 import Destination from '../types/DestinationInterface';
 import Origin from '../types/OriginInterface';
-import { decode } from '@googlemaps/polyline-codec';
-import LatLngConvert from '../helpers/LatLngConvert';
-import calculateInitialBearing from '../helpers/BearingCalculator';
-import { LatLng } from 'react-native-maps';
-import {
-  upperHeaderThreshold,
-  lowerHeaderThreshold,
-} from '../helpers/DetermineHeaderThreshold';
 
 export const RouteContext = createContext<any>(null);
 
@@ -30,8 +22,6 @@ export function RouteContextProvider({ children }: any) {
   const [fastestRoute, setFastestRoute] = useState<any>();
   const [shortestRoute, setShortestRoute] = useState<any>();
   const [filteredJeepneyCodes, setFilteredJeepneyCodes] = useState<any[]>();
-  const [upperHeadingThreshold, setUpperHeadingThreshold] = useState<any>();
-  const [lowerHeadingThreshold, setLowerHeadingThreshold] = useState<any>();
 
   /**
    * Get route data.
@@ -135,36 +125,6 @@ export function RouteContextProvider({ children }: any) {
     }
   }
 
-  function setTransitHeading(index: any) {
-    console.log(routeData);
-    if (routeData) {
-      routeData.routes[index].legs[0].steps.map((step: any) => {
-        if (step.travelMode === 'TRANSIT') {
-          const coords: LatLng[] = LatLngConvert(
-            decode(step.polyline.encodedPolyline, 5),
-          );
-          const bearing = calculateInitialBearing(
-            coords[0].latitude,
-            coords[0].longitude,
-            coords[2].latitude,
-            coords[2].longitude,
-          );
-          setHeadingThreshold(bearing);
-          console.log(bearing);
-        }
-      });
-    }
-  }
-
-  function setHeadingThreshold(angle: any) {
-    const lowerThreshold = lowerHeaderThreshold(angle);
-    const upperThreshold = upperHeaderThreshold(angle);
-    setUpperHeadingThreshold(upperThreshold);
-    setLowerHeadingThreshold(lowerThreshold);
-    console.log(lowerThreshold);
-    console.log(upperThreshold);
-  }
-
   return (
     <RouteContext.Provider
       value={{
@@ -201,9 +161,6 @@ export function RouteContextProvider({ children }: any) {
         getJeepneyCodes,
         filteredJeepneyCodes,
         setFilteredJeepneyCodes,
-        setTransitHeading,
-        upperHeadingThreshold,
-        lowerHeadingThreshold,
       }}>
       {children}
     </RouteContext.Provider>
