@@ -3,7 +3,6 @@ import firestore from '@react-native-firebase/firestore';
 import Geolocation from '@react-native-community/geolocation';
 import { getRouteData } from '../service/RouteService';
 import { RouteContext } from './Route';
-import calculateInitialBearing from '../helpers/BearingCalculator';
 
 export const UserContext = createContext<any>(null);
 
@@ -21,8 +20,6 @@ export function UserContextProvider({ children }: any) {
   const showETA = useRef(false);
   const { destination } = useContext(RouteContext);
   const [eta, setEta] = useState('');
-  const [prevLat, setPrevLat] = useState<any>();
-  const [prevLon, setPrevLon] = useState<any>();
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -92,33 +89,12 @@ export function UserContextProvider({ children }: any) {
         }
       });
   }
-  async function fetchLocationFromDb() {
-    await firestore()
-      .collection('Roles')
-      .doc('Driver')
-      .collection('Users')
-      .doc(user.name)
-      .get()
-      .then((DocumentSnapshot: any) => {
-        if (DocumentSnapshot.exists) {
-          setPrevLat(DocumentSnapshot._data.latitude);
-          setPrevLon(DocumentSnapshot._data.longitude);
-        }
-      });
-  }
 
   async function updateLocationInDb(isActive: any) {
     try {
       if (isActive) {
         Geolocation.watchPosition(
           data => {
-            fetchLocationFromDb();
-            const bearing = calculateInitialBearing(
-              prevLat,
-              prevLon,
-              data.coords.latitude,
-              data.coords.longitude,
-            );
             firestore()
               .collection('Roles')
               .doc('Driver')
@@ -127,7 +103,7 @@ export function UserContextProvider({ children }: any) {
               .update({
                 latitude: data.coords.latitude,
                 longitude: data.coords.longitude,
-                heading: bearing,
+                heading: data.coords.heading,
                 is_active: true,
               });
           },
