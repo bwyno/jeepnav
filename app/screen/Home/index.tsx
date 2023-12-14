@@ -14,8 +14,13 @@ import firestore from '@react-native-firebase/firestore';
 export default function Home() {
   const { height, width } = useWindowDimensions();
   const { getUserLocation, userLocation, userRole } = useContext(UserContext);
-  const { routeData, routeIndex, region, filteredJeepneyCodes } =
-    useContext(RouteContext);
+  const {
+    routeData,
+    routeIndex,
+    region,
+    filteredJeepneyCodes,
+    filteredJeepneyHeadsigns,
+  } = useContext(RouteContext);
   const [status, setStatus] = React.useState<any>('unchecked');
   const [showOthers, setShowOthers] = React.useState<any>('unchecked');
   const [otherUsers, setOtherUsers] = React.useState<any>();
@@ -89,13 +94,17 @@ export default function Home() {
           otherUsers.map(
             (user: any, index: any) =>
               user._data.is_tracking_allowed &&
-              filteredJeepneyCodes.includes(user._data.jeepney_code) && (
+              filteredJeepneyCodes.includes(user._data.jeepney_code) &&
+              filteredJeepneyHeadsigns.includes(
+                user._data.jeepney_headsign,
+              ) && (
                 <Marker
                   key={index}
                   coordinate={{
                     latitude: user._data.latitude,
                     longitude: user._data.longitude,
-                  }}>
+                  }}
+                  anchor={{ x: 0.5, y: 0.5 }}>
                   <View
                     style={{
                       alignItems: 'center',
@@ -107,7 +116,7 @@ export default function Home() {
                         width: 70,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        transform: [{ rotate: `${user._data.heading}deg` }],
+                        // transform: [{ rotate: `${user._data.heading}deg` }],
                       }}>
                       <View
                         style={{
@@ -118,13 +127,13 @@ export default function Home() {
                         }}>
                         <Icon source="jeepney" size={25} color="green" />
                       </View>
-                      <View
+                      {/* <View
                         style={{
                           position: 'absolute',
                           top: 0,
                         }}>
                         <Icon source="arrow-up" size={25} color="red" />
-                      </View>
+                      </View> */}
                     </View>
                     <View
                       style={{

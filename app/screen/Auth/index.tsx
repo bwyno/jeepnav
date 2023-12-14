@@ -7,6 +7,7 @@ import {
   View,
   Keyboard,
   Image,
+  ScrollView,
 } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
@@ -18,6 +19,7 @@ export default function Auth({ navigation }: any) {
   const [name, setName] = useState('');
   const [showSignUp, setShowSignUp] = useState<boolean>(false);
   // const [fare, setFare] = useState('');
+  const [jeepneyRoute, setJeepneyRoute] = useState<any>('');
   const [jeepneyCode, setJeepneyCode] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
   const [error, setError] = useState('');
@@ -34,7 +36,7 @@ export default function Auth({ navigation }: any) {
 
   function createAccount() {
     // if (fare && name && jeepneyCode && plateNumber) {
-    if (name && jeepneyCode && plateNumber) {
+    if (name && jeepneyCode && plateNumber && jeepneyRoute) {
       setError('');
       signUp(
         name,
@@ -43,6 +45,7 @@ export default function Auth({ navigation }: any) {
           jeepney_code: jeepneyCode,
           plate_number: plateNumber,
           is_active: true,
+          jeepney_route: jeepneyRoute,
           // minimum_fare: fare,
         },
         navigation,
@@ -54,54 +57,92 @@ export default function Auth({ navigation }: any) {
 
   return (
     <View style={styles.authView}>
-      <Disclaimer
-        isVisible={isDisclaimerVisible}
-        onClose={() => setIsDisclaimerVisible(false)}
-      />
-      <View style={styles.authHeaderView}>
-        <Image
-          style={styles.authHeaderlogo}
-          source={require('../../../assets/jeepnav-logo.png')}
-        />
-      </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.authContentView}>
-          {!hasSelected && !showSignUp && (
-            <>
-              <Text style={styles.authContentHeader}>Are you a...</Text>
-              <View style={styles.authContentSelectionView}>
-                <View style={styles.authSelection}>
-                  <IconButton
-                    icon="account"
-                    size={70}
-                    iconColor="tomato"
-                    onPress={() => {
-                      navigation.push('TabNavigator');
-                      setUserRole('commuter');
-                    }}
-                  />
-                  <Text style={styles.authSelectionLabel}>COMMUTER</Text>
-                </View>
-                <View style={styles.authSelection}>
-                  <IconButton
-                    icon="jeepney"
-                    size={70}
-                    iconColor="tomato"
-                    onPress={() => {
-                      setHasSelected(true);
-                      setUserRole('driver');
-                    }}
-                  />
-                  <Text style={styles.authSelectionLabel}>DRIVER</Text>
-                </View>
-              </View>
-            </>
-          )}
-          {hasSelected && !showSignUp && (
-            <>
-              <View style={styles.signInView}>
-                <Text style={styles.signInHeader}>Sign in</Text>
-                <View style={styles.formStyle}>
+      <ScrollView>
+        <View style={styles.authContainer}>
+          <Disclaimer
+            isVisible={isDisclaimerVisible}
+            onClose={() => setIsDisclaimerVisible(false)}
+          />
+          <View style={styles.authHeaderView}>
+            <Image
+              style={styles.authHeaderlogo}
+              source={require('../../../assets/jeepnav-logo.png')}
+            />
+          </View>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.authContentView}>
+              {!hasSelected && !showSignUp && (
+                <>
+                  <Text style={styles.authContentHeader}>Are you a...</Text>
+                  <View style={styles.authContentSelectionView}>
+                    <View style={styles.authSelection}>
+                      <IconButton
+                        icon="account"
+                        size={70}
+                        iconColor="tomato"
+                        onPress={() => {
+                          navigation.push('TabNavigator');
+                          setUserRole('commuter');
+                        }}
+                      />
+                      <Text style={styles.authSelectionLabel}>COMMUTER</Text>
+                    </View>
+                    <View style={styles.authSelection}>
+                      <IconButton
+                        icon="jeepney"
+                        size={70}
+                        iconColor="tomato"
+                        onPress={() => {
+                          setHasSelected(true);
+                          setUserRole('driver');
+                        }}
+                      />
+                      <Text style={styles.authSelectionLabel}>DRIVER</Text>
+                    </View>
+                  </View>
+                </>
+              )}
+              {hasSelected && !showSignUp && (
+                <>
+                  <View style={styles.signInView}>
+                    <Text style={styles.signInHeader}>Sign in</Text>
+                    <View style={styles.formStyle}>
+                      <TextInput
+                        placeholder="Name"
+                        value={name}
+                        onChangeText={text => setName(text)}
+                        style={styles.logInForm}
+                        placeholderTextColor={'white'}
+                      />
+                      <Button
+                        buttonColor="tomato"
+                        textColor="white"
+                        onPress={() => {
+                          logIn(name, navigation);
+                        }}>
+                        Log In
+                      </Button>
+                      {loginErrorMsg && (
+                        <Text
+                          style={
+                            styles.signUpErrorText
+                          }>{`ERROR: ${loginErrorMsg}`}</Text>
+                      )}
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        setShowSignUp(true);
+                        setLoginErrorMsg('');
+                      }}>
+                      <Text style={styles.textStyles}>
+                        Dont have an account? Sign up here.
+                      </Text>
+                    </Pressable>
+                  </View>
+                </>
+              )}
+              {showSignUp && (
+                <>
                   <TextInput
                     placeholder="Name"
                     value={name}
@@ -109,86 +150,51 @@ export default function Auth({ navigation }: any) {
                     style={styles.logInForm}
                     placeholderTextColor={'white'}
                   />
+                  <TextInput
+                    placeholder="Jeepney Code"
+                    value={jeepneyCode}
+                    onChangeText={text => setJeepneyCode(text)}
+                    style={styles.logInForm}
+                    placeholderTextColor={'white'}
+                  />
+                  <TextInput
+                    placeholder="Plate Number"
+                    value={plateNumber}
+                    onChangeText={text => setPlateNumber(text)}
+                    style={styles.logInForm}
+                    placeholderTextColor={'white'}
+                  />
+                  <TextInput
+                    placeholder="Jeepney Route"
+                    value={jeepneyRoute}
+                    onChangeText={value => setJeepneyRoute(value)}
+                    style={styles.logInForm}
+                    placeholderTextColor={'white'}
+                  />
                   <Button
                     buttonColor="tomato"
                     textColor="white"
                     onPress={() => {
-                      logIn(name, navigation);
+                      createAccount();
                     }}>
-                    Log In
+                    Sign Up
                   </Button>
-                  {loginErrorMsg && (
+                  {error && (
+                    <Text
+                      style={styles.signUpErrorText}>{`ERROR: ${error}`}</Text>
+                  )}
+                  {signupErrorMsg && (
                     <Text
                       style={
                         styles.signUpErrorText
-                      }>{`ERROR: ${loginErrorMsg}`}</Text>
+                      }>{`ERROR: ${signupErrorMsg}`}</Text>
                   )}
-                </View>
-                <Pressable
-                  onPress={() => {
-                    setShowSignUp(true);
-                    setLoginErrorMsg('');
-                  }}>
-                  <Text style={styles.textStyles}>
-                    Dont have an account? Sign up here.
-                  </Text>
-                </Pressable>
-              </View>
-            </>
-          )}
-          {showSignUp && (
-            <>
-              <TextInput
-                placeholder="Name"
-                value={name}
-                onChangeText={text => setName(text)}
-                style={styles.logInForm}
-                placeholderTextColor={'white'}
-              />
-              <TextInput
-                placeholder="Jeepney Code"
-                value={jeepneyCode}
-                onChangeText={text => setJeepneyCode(text)}
-                style={styles.logInForm}
-                placeholderTextColor={'white'}
-              />
-              <TextInput
-                placeholder="Plate Number"
-                value={plateNumber}
-                onChangeText={text => setPlateNumber(text)}
-                style={styles.logInForm}
-                placeholderTextColor={'white'}
-              />
-              {/* <TextInput
-                placeholder="Minimum Fare"
-                value={fare}
-                onChangeText={value => setFare(value)}
-                style={styles.logInForm}
-                placeholderTextColor={'white'}
-                keyboardType="numeric"
-                maxLength={5}
-              /> */}
-              <Button
-                buttonColor="tomato"
-                textColor="white"
-                onPress={() => {
-                  createAccount();
-                }}>
-                Sign Up
-              </Button>
-              {error && (
-                <Text style={styles.signUpErrorText}>{`ERROR: ${error}`}</Text>
+                </>
               )}
-              {signupErrorMsg && (
-                <Text
-                  style={
-                    styles.signUpErrorText
-                  }>{`ERROR: ${signupErrorMsg}`}</Text>
-              )}
-            </>
-          )}
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </TouchableWithoutFeedback>
+      </ScrollView>
     </View>
   );
 }
@@ -197,6 +203,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: '#242F3E',
+  },
+  authContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },

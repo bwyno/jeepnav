@@ -22,6 +22,8 @@ export function RouteContextProvider({ children }: any) {
   const [fastestRoute, setFastestRoute] = useState<any>();
   const [shortestRoute, setShortestRoute] = useState<any>();
   const [filteredJeepneyCodes, setFilteredJeepneyCodes] = useState<any[]>();
+  const [filteredJeepneyHeadsigns, setFilteredJeepneyHeadsigns] =
+    useState<any[]>();
 
   /**
    * Get route data.
@@ -81,13 +83,16 @@ export function RouteContextProvider({ children }: any) {
 
   function getJeepneyCodes(index: any) {
     let jeepneyCodes: any = [];
+    let jeepneyHeadsigns: any = [];
     if (routeData) {
       routeData.routes[index].legs[0].steps.map((step: any) => {
         if (step.travelMode === 'TRANSIT') {
           jeepneyCodes.push(step.transitDetails.transitLine.nameShort);
+          jeepneyHeadsigns.push(step.transitDetails.headsign);
         }
       });
       setFilteredJeepneyCodes(jeepneyCodes);
+      setFilteredJeepneyHeadsigns(jeepneyHeadsigns);
     }
   }
 
@@ -161,6 +166,8 @@ export function RouteContextProvider({ children }: any) {
         getJeepneyCodes,
         filteredJeepneyCodes,
         setFilteredJeepneyCodes,
+        filteredJeepneyHeadsigns,
+        setFilteredJeepneyHeadsigns,
       }}>
       {children}
     </RouteContext.Provider>
