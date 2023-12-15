@@ -13,7 +13,7 @@ import firestore from '@react-native-firebase/firestore';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
-  const { getUserLocation, userLocation, userRole, setUserLocation } =
+  const { getUserLocation, userLocation, userRole, setUserLocation, user } =
     useContext(UserContext);
   const {
     routeData,
@@ -45,6 +45,8 @@ export default function Home() {
   const onToggleShowOthers = (_value: any) => {
     setShowOthers(showOthers === 'checked' ? 'unchecked' : 'checked');
   };
+  let dependency =
+    userRole === 'commuter' ? userRole : user.is_tracking_allowed;
   useEffect(() => {
     getUserLocation();
     if (userRole === 'commuter' && routeData) {
@@ -58,7 +60,7 @@ export default function Home() {
       return () => subscriber();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setUserLocation]);
+  }, [setUserLocation, dependency]);
 
   return (
     <View style={{ height, width }}>
