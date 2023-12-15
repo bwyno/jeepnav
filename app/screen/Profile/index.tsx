@@ -12,8 +12,7 @@ import { Button, IconButton, Switch } from 'react-native-paper';
 import { UserContext } from '../../context/User';
 
 export default function Profile() {
-  const { user, updateData, userRole, updateLocationInDb } =
-    useContext(UserContext);
+  const { user, updateData, userRole } = useContext(UserContext);
   // const [fare, setFare] = useState(user.fare);
   const [jeepneyCode, setJeepneyCode] = useState('');
   const [jeepneyRoute, setJeepneyRoute] = useState<any>('');
@@ -31,9 +30,7 @@ export default function Profile() {
       setAllowTracking(user.is_tracking_allowed);
       setJeepneyRoute(user.jeepney_route);
       setJeepneyHeadsign(user.jeepney_headsign ? user.jeepney_headsign : '');
-      updateLocationInDb(user.is_tracking_allowed);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userRole, user]);
 
   function updateInformation() {

@@ -13,7 +13,8 @@ import firestore from '@react-native-firebase/firestore';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
-  const { getUserLocation, userLocation, userRole } = useContext(UserContext);
+  const { getUserLocation, userLocation, userRole, setUserLocation } =
+    useContext(UserContext);
   const {
     routeData,
     routeIndex,
@@ -56,7 +57,8 @@ export default function Home() {
         });
       return () => subscriber();
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setUserLocation]);
 
   return (
     <View style={{ height, width }}>

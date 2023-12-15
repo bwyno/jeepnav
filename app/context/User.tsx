@@ -1,8 +1,6 @@
-import React, { createContext, useContext, useRef, useState } from 'react';
+import React, { createContext, useRef, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import Geolocation from '@react-native-community/geolocation';
-import { getRouteData } from '../service/RouteService';
-import { RouteContext } from './Route';
 
 export const UserContext = createContext<any>(null);
 
@@ -16,10 +14,6 @@ export function UserContextProvider({ children }: any) {
   const otherUsers = useRef();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
   const [userHeading, setUserHeading] = useState<any>(0);
-  const [userSpeed, setUserSpeed] = useState<any>();
-  const showETA = useRef(false);
-  const { destination } = useContext(RouteContext);
-  const [eta, setEta] = useState('');
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -94,8 +88,8 @@ export function UserContextProvider({ children }: any) {
     try {
       if (isActive) {
         Geolocation.watchPosition(
-          data => {
-            firestore()
+          async data => {
+            await firestore()
               .collection('Roles')
               .doc('Driver')
               .collection('Users')
@@ -112,15 +106,12 @@ export function UserContextProvider({ children }: any) {
           },
           {
             enableHighAccuracy: true,
-            interval: 1000,
-            fastestInterval: 1000,
-            timeout: 1000,
             maximumAge: 0,
-            distanceFilter: 5,
+            timeout: 2000,
           },
         );
       } else {
-        firestore()
+        await firestore()
           .collection('Roles')
           .doc('Driver')
           .collection('Users')
@@ -129,48 +120,13 @@ export function UserContextProvider({ children }: any) {
             latitude: 0,
             longitude: 0,
             heading: 0,
+            is_tracking_allowed: false,
             is_active: false,
           });
       }
     } catch (error) {
       console.log(error);
     }
-  }
-
-  async function getETA() {
-    await getRouteData({
-      origin: {
-        location: {
-          latLng: {
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-          },
-        },
-      },
-      destination: {
-        location: {
-          latLng: {
-            latitude: destination?.geometry?.location?.lat,
-            longitude: destination?.geometry?.location?.lng,
-          },
-        },
-      },
-      travelMode: 'TRANSIT',
-      computeAlternativeRoutes: true,
-      routeModifiers: {
-        avoidTolls: false,
-        avoidHighways: false,
-        avoidFerries: false,
-      },
-      languageCode: 'en-US',
-      units: 'IMPERIAL',
-    })
-      .then(response => {
-        setEta(response.data.routes[0].legs[0].duration);
-      })
-      .catch(error => {
-        console.log(error);
-      });
   }
 
   async function getUserLocation() {
@@ -182,18 +138,30 @@ export function UserContextProvider({ children }: any) {
             longitude: data.coords.longitude,
           });
           setUserHeading(data.coords.heading);
-          setUserSpeed(data.coords.speed);
+
+          if (userRole === 'driver') {
+            if (user.is_tracking_allowed) {
+              firestore()
+                .collection('Roles')
+                .doc('Driver')
+                .collection('Users')
+                .doc(user.name)
+                .update({
+                  latitude: data.coords.latitude,
+                  longitude: data.coords.longitude,
+                  heading: data.coords.heading,
+                  is_active: true,
+                });
+            }
+          }
         },
         error => {
           console.log(error);
         },
         {
           enableHighAccuracy: true,
-          interval: 1000,
-          fastestInterval: 1000,
-          timeout: 1000,
           maximumAge: 0,
-          distanceFilter: 5,
+          timeout: 2000,
         },
       );
     } catch (error) {
@@ -227,12 +195,6 @@ export function UserContextProvider({ children }: any) {
         userHeading,
         setUserHeading,
         updateLocationInDb,
-        userSpeed,
-        setUserSpeed,
-        getETA,
-        showETA,
-        eta,
-        setEta,
       }}>
       {children}
     </UserContext.Provider>
