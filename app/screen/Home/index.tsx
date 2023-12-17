@@ -96,6 +96,7 @@ export default function Home() {
         {otherUsers &&
           showOthers === 'checked' &&
           otherUsers.map(
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             (user: any, index: any) =>
               user._data.is_tracking_allowed &&
               filteredJeepneyCodes.includes(user._data.jeepney_code) &&
