@@ -89,6 +89,7 @@ export function UserContextProvider({ children }: any) {
       if (isActive) {
         Geolocation.watchPosition(
           async data => {
+            console.log(data);
             await firestore()
               .collection('Roles')
               .doc('Driver')
@@ -107,7 +108,8 @@ export function UserContextProvider({ children }: any) {
           {
             enableHighAccuracy: true,
             maximumAge: 0,
-            timeout: 2000,
+            timeout: 0,
+            distanceFilter: 0,
           },
         );
       } else {
@@ -132,7 +134,7 @@ export function UserContextProvider({ children }: any) {
   async function getUserLocation() {
     try {
       Geolocation.watchPosition(
-        data => {
+        async data => {
           setUserLocation({
             latitude: data.coords.latitude,
             longitude: data.coords.longitude,
@@ -161,7 +163,8 @@ export function UserContextProvider({ children }: any) {
         {
           enableHighAccuracy: true,
           maximumAge: 0,
-          timeout: 2000,
+          timeout: 0,
+          distanceFilter: 0,
         },
       );
     } catch (error) {

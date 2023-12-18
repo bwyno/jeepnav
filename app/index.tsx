@@ -60,9 +60,12 @@ function App(): JSX.Element {
   const { fetchAppSettings } = useContext(SettingsContext);
 
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      SplashScreen.hide();
-    }
+    setTimeout(() => {
+      if (Platform.OS === 'android') {
+        SplashScreen.hide();
+      }
+    }, 5000);
+
     fetchAppSettings();
   });
   return (
