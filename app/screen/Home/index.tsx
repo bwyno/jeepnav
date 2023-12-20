@@ -10,11 +10,19 @@ import { Icon, ToggleButton } from 'react-native-paper';
 import { RouteContext } from '../../context/Route';
 import DynamicPolyline from '../../components/DynamicPolyline';
 import firestore from '@react-native-firebase/firestore';
+import InfoModal from '../../components/Modals/InfoModal';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
-  const { getUserLocation, userLocation, userRole, setUserLocation, user } =
-    useContext(UserContext);
+  const {
+    getUserLocation,
+    userLocation,
+    userRole,
+    setUserLocation,
+    user,
+    setSelectedJeep,
+    selectedJeep,
+  } = useContext(UserContext);
   const {
     routeData,
     routeIndex,
@@ -25,6 +33,7 @@ export default function Home() {
   const [status, setStatus] = React.useState<any>('unchecked');
   const [showOthers, setShowOthers] = React.useState<any>('unchecked');
   const [otherUsers, setOtherUsers] = React.useState<any>();
+  const [showModal, setShowModal] = React.useState<boolean>();
 
   /**
    * Set Initial Region to Cebu
@@ -104,12 +113,18 @@ export default function Home() {
                 user._data.jeepney_headsign,
               ) && (
                 <Marker
+                  id={index}
                   key={index}
                   coordinate={{
                     latitude: user._data.latitude,
                     longitude: user._data.longitude,
                   }}
-                  anchor={{ x: 0.5, y: 0.5 }}>
+                  anchor={{ x: 0.5, y: 0.5 }}
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  onPress={(e: any) => {
+                    setSelectedJeep(otherUsers[index]._data);
+                    setShowModal(!showModal);
+                  }}>
                   <View
                     style={{
                       alignItems: 'center',
@@ -157,6 +172,7 @@ export default function Home() {
           <DynamicPolyline route={routeData.routes[routeIndex]} />
         )}
       </MapView>
+      {showModal && selectedJeep && InfoModal(showModal, selectedJeep)}
       <ToggleButton
         icon={status === 'checked' ? 'shield-home' : 'shield-home-outline'}
         value="bluetooth"
@@ -166,15 +182,17 @@ export default function Home() {
         style={styles.toggleButtonA}
         size={40}
       />
-      <ToggleButton
-        icon={showOthers === 'checked' ? 'jeepney' : 'car-off'}
-        value="bluetooth"
-        status={showOthers}
-        onPress={onToggleShowOthers}
-        iconColor="tomato"
-        style={styles.toggleButtonB}
-        size={40}
-      />
+      {routeData && (
+        <ToggleButton
+          icon={showOthers === 'checked' ? 'jeepney' : 'car-off'}
+          value="bluetooth"
+          status={showOthers}
+          onPress={onToggleShowOthers}
+          iconColor="tomato"
+          style={styles.toggleButtonB}
+          size={40}
+        />
+      )}
     </View>
   );
 }
@@ -188,6 +206,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: '100%',
+    zIndex: 0,
   },
   toggleButtonA: {
     position: 'absolute',

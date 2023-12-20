@@ -14,6 +14,7 @@ export function UserContextProvider({ children }: any) {
   const otherUsers = useRef();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
   const [userHeading, setUserHeading] = useState<any>(0);
+  const [selectedJeep, setSelectedJeep] = React.useState<any>();
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -198,6 +199,8 @@ export function UserContextProvider({ children }: any) {
         userHeading,
         setUserHeading,
         updateLocationInDb,
+        selectedJeep,
+        setSelectedJeep,
       }}>
       {children}
     </UserContext.Provider>
