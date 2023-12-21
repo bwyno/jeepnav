@@ -11,6 +11,7 @@ import { RouteContext } from '../../context/Route';
 import DynamicPolyline from '../../components/DynamicPolyline';
 import firestore from '@react-native-firebase/firestore';
 import InfoModal from '../../components/Modals/InfoModal';
+import InGeofenceRadius from '../../helpers/InGeofenceRadius';
 
 export default function Home() {
   const { height, width } = useWindowDimensions();
@@ -123,16 +124,21 @@ export default function Home() {
             </Marker>
           </>
         )}
-        {otherUsers &&
+        {!rideJeepney &&
+          routeData &&
+          otherUsers &&
           showOthers === 'checked' &&
           otherUsers.map(
             // eslint-disable-next-line @typescript-eslint/no-shadow
             (user: any, index: any) =>
               user._data.is_tracking_allowed &&
               filteredJeepneyCodes.includes(user._data.jeepney_code) &&
-              filteredJeepneyHeadsigns.includes(
-                user._data.jeepney_headsign,
-              ) && (
+              filteredJeepneyHeadsigns.includes(user._data.jeepney_headsign) &&
+              InGeofenceRadius(
+                user._data.latitude,
+                user._data.longitude,
+                routeData.routes[routeIndex],
+              ) === true && (
                 <Marker
                   id={index}
                   key={index}
@@ -189,6 +195,47 @@ export default function Home() {
                 </Marker>
               ),
           )}
+        {selectedJeep && otherUsers && rideJeepney && (
+          <Marker
+            coordinate={{
+              latitude: otherUsers[selectedJeep]._data.latitude,
+              longitude: otherUsers[selectedJeep]._data.longitude,
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  height: 70,
+                  width: 70,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    borderRadius: 25,
+                    borderWidth: 1,
+                    borderColor: 'tomato',
+                    margin: 0,
+                  }}>
+                  <Icon source="jeepney" size={25} color="green" />
+                </View>
+              </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                }}>
+                <Text style={{ color: 'white' }}>
+                  {otherUsers[selectedJeep]._data.jeepney_code}
+                </Text>
+              </View>
+            </View>
+          </Marker>
+        )}
         {routeData?.routes && (
           <DynamicPolyline route={routeData.routes[routeIndex]} />
         )}
