@@ -47,7 +47,9 @@ function TabNavigator() {
         })}
         initialRouteName="Home">
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Map Search" component={MapSearch} />
+        {userRole === 'commuter' && (
+          <Tab.Screen name="Map Search" component={MapSearch} />
+        )}
         {userRole !== 'commuter' && (
           <Tab.Screen name="Profile" component={Profile} />
         )}
@@ -60,9 +62,12 @@ function App(): JSX.Element {
   const { fetchAppSettings } = useContext(SettingsContext);
 
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      SplashScreen.hide();
-    }
+    setTimeout(() => {
+      if (Platform.OS === 'android') {
+        SplashScreen.hide();
+      }
+    }, 5000);
+
     fetchAppSettings();
   });
   return (

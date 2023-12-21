@@ -14,6 +14,7 @@ export function UserContextProvider({ children }: any) {
   const otherUsers = useRef();
   const [isDisclaimerVisible, setIsDisclaimerVisible] = useState(true);
   const [userHeading, setUserHeading] = useState<any>(0);
+  const [selectedJeep, setSelectedJeep] = React.useState<any>();
 
   async function logIn(name: any, navigation: any) {
     await firestore()
@@ -89,6 +90,7 @@ export function UserContextProvider({ children }: any) {
       if (isActive) {
         Geolocation.watchPosition(
           async data => {
+            console.log(data);
             await firestore()
               .collection('Roles')
               .doc('Driver')
@@ -107,7 +109,8 @@ export function UserContextProvider({ children }: any) {
           {
             enableHighAccuracy: true,
             maximumAge: 0,
-            timeout: 2000,
+            timeout: 0,
+            distanceFilter: 0,
           },
         );
       } else {
@@ -132,7 +135,7 @@ export function UserContextProvider({ children }: any) {
   async function getUserLocation() {
     try {
       Geolocation.watchPosition(
-        data => {
+        async data => {
           setUserLocation({
             latitude: data.coords.latitude,
             longitude: data.coords.longitude,
@@ -161,7 +164,8 @@ export function UserContextProvider({ children }: any) {
         {
           enableHighAccuracy: true,
           maximumAge: 0,
-          timeout: 2000,
+          timeout: 0,
+          distanceFilter: 0,
         },
       );
     } catch (error) {
@@ -195,6 +199,8 @@ export function UserContextProvider({ children }: any) {
         userHeading,
         setUserHeading,
         updateLocationInDb,
+        selectedJeep,
+        setSelectedJeep,
       }}>
       {children}
     </UserContext.Provider>
