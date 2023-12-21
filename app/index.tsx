@@ -47,7 +47,9 @@ function TabNavigator() {
         })}
         initialRouteName="Home">
         <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Map Search" component={MapSearch} />
+        {userRole === 'commuter' && (
+          <Tab.Screen name="Map Search" component={MapSearch} />
+        )}
         {userRole !== 'commuter' && (
           <Tab.Screen name="Profile" component={Profile} />
         )}

@@ -2,40 +2,49 @@ import { View, StyleSheet, Text } from 'react-native';
 import React from 'react';
 import { Button } from 'react-native-paper';
 
-export default function InfoModal(isModalShown = false, selectedJeep: any) {
+export default function InfoModal(
+  onRideJeepney: any,
+  onHideModal: any,
+  selectedJeep: any,
+) {
   return (
     <View style={styles.modal}>
-      {isModalShown && (
-        <View style={styles.container}>
-          <Text
-            style={
-              styles.textStyle
-            }>{`Driver Name: ${selectedJeep.name}`}</Text>
-          <Text
-            style={
-              styles.textStyle
-            }>{`Code: ${selectedJeep.jeepney_code}`}</Text>
-          <Text
-            style={
-              styles.textStyle
-            }>{`Plate Number: ${selectedJeep.plate_number}`}</Text>
-          <Text
-            style={
-              styles.textStyle
-            }>{`Route: ${selectedJeep.jeepney_route}`}</Text>
-          <Text
-            style={
-              styles.textStyle
-            }>{`Headsign: ${selectedJeep.jeepney_headsign}`}</Text>
+      <View style={styles.container}>
+        <Text
+          style={styles.textStyle}>{`Driver Name: ${selectedJeep.name}`}</Text>
+        <Text
+          style={styles.textStyle}>{`Code: ${selectedJeep.jeepney_code}`}</Text>
+        <Text
+          style={
+            styles.textStyle
+          }>{`Plate Number: ${selectedJeep.plate_number}`}</Text>
+        <Text
+          style={
+            styles.textStyle
+          }>{`Route: ${selectedJeep.jeepney_route}`}</Text>
+        <Text
+          style={
+            styles.textStyle
+          }>{`Headsign: ${selectedJeep.jeepney_headsign}`}</Text>
+        <View style={styles.buttonContainer}>
           <Button
             icon="jeepney"
-            onPress={() => {}}
+            onPress={() => onRideJeepney()}
             buttonColor="tomato"
-            textColor="white">
+            textColor="white"
+            style={styles.buttonStyle}>
             Ride Jeepney
           </Button>
+          <Button
+            icon="close-circle"
+            onPress={() => onHideModal()}
+            buttonColor="tomato"
+            textColor="white"
+            style={styles.buttonStyle}>
+            Close
+          </Button>
         </View>
-      )}
+      </View>
     </View>
   );
 }
@@ -49,7 +58,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '90%',
-    height: 150,
+    height: 165,
     backgroundColor: '#441877',
     zIndex: 10,
     borderRadius: 20,
@@ -57,5 +66,13 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: 'white',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+  },
+  buttonStyle: {
+    width: ' 50%',
   },
 });
